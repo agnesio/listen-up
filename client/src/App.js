@@ -9,16 +9,30 @@ const spotifyApi = new SpotifyWebApi();
 class App extends Component {
   constructor(){
     super();
+    this.playerCheckInterval = null;
     const params = this.getHashParams();
     const token = params.access_token;
     if (token) {
+      console.log(token)
       spotifyApi.setAccessToken(token);
+      this.playerCheckInterval = setInterval(() => this.checkForPlayer(token), 1000);
+      this.checkForPlayer(token)
     }
     this.state = {
       loggedIn: token ? true : false,
       data: [],
+      token: token,
       hipster: 0,
-      offset: 0
+      offset: 0,
+      artistTracks: [],
+      error: "",
+      trackName: "Track Name",
+      artistName: "Artist Name",
+      albumName: "Album Name",
+      playing: false,
+      position: 0,
+      duration: 0,
+      deviceId: ""
     }
   }
 
@@ -35,6 +49,41 @@ class App extends Component {
     return hashParams;
   }
 
+  checkForPlayer(token) {
+    if (window.Spotify) {
+      console.log(token)
+      clearInterval(this.playerCheckInterval);
+      this.player = new window.Spotify.Player({
+        name: "Agnes Spotify Player",
+        getOAuthToken: cb => { cb(token); },
+      });
+      this.createEventHandlers();
+
+      // finally, connect!
+      this.player.connect();
+    }
+  }
+
+  createEventHandlers() {
+    this.player.on('initialization_error', e => { console.error(e); });
+    this.player.on('authentication_error', e => {
+      console.error(e);
+      this.setState({ loggedIn: false });
+    });
+    this.player.on('account_error', e => { console.error(e); });
+    this.player.on('playback_error', e => { console.error(e); });
+
+    // Playback status updates
+    this.player.on('player_state_changed', state => { console.log(state); });
+
+    // Ready
+    this.player.on('ready', data => {
+      let { device_id } = data;
+      console.log("Let the music play on!");
+      this.setState({ deviceId: device_id });
+    });
+  }
+
   getMood(){
     let currAnalysis = [];
     spotifyApi.getMyRecentlyPlayedTracks()
@@ -45,19 +94,29 @@ class App extends Component {
             this.getAnalysis(info.audio_features)
           })
         })
-    // let artists = ['Naked Giants', 'Don Babylon', 'Car Seat Headrest', 'Nightmare Air',
-    // 'Gary Numan', 'Sweater Beats', 'Andrew Luce', 'Weathan', 'Matthew Thiessen And The Earthquakes', 'Owl City']
-    // artists.forEach(a => {
-    //   spotifyApi.search(a, ['artist']).then(val => {
-    //     console.log(val)
-    //   })
-    // })
+  }
+
+  getLocalConcerts(){
+    let artists = ['Naked Giants', 'Don Babylon', 'Car Seat Headrest', 'Nightmare Air',
+    'Gary Numan', 'Sweater Beats', 'Andrew Luce', 'Weathan', 'Matthew Thiessen And The Earthquakes', 'Owl City']
+    let tracks = this.state.artistTracks
+    artists.forEach(a => {
+      spotifyApi.searchArtists(a).then(val => {
+        if (val && val.artists.items.length > 0){
+          spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
+            tracks.concat(result.tracks.slice(0,3))
+            this.setState({
+              artistTracks: tracks,
+            })
+          })
+        }
+      })
+    })
   }
 
   getStatus(){
     let pop = this.state.hipster;
     spotifyApi.getMySavedTracks(this.state.offset).then((response) => {
-      console.log(response)
       response.items.forEach(i => {
         pop += i.track.popularity;
       })
@@ -118,7 +177,7 @@ class App extends Component {
               {(100 - this.state.hipster) +'% Hipster'}
             </h1>
             <h2>
-            {this.state.hipster > 80 ? 'Absolutely not' :
+            {this.state.hipster > 80 ? 'Absolutely not hipster' :
               this.state.hipster > 65 ? "Eh you're not totally mainstream" :
                 this.state.hipster > 50 ? "You know some hidden tracks" :
                   this.state.hipster > 40 ? "People go to you for music" :
@@ -145,6 +204,9 @@ class App extends Component {
             </button>
             <button onClick={() => this.getStatus()}>
               Am I A Hipster?
+            </button>
+            <button onClick={() => this.getLocalConcerts()}>
+              Get Music for Upcoming Concerts
             </button>
           </div>
         }
