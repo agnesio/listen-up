@@ -13,7 +13,6 @@ class App extends Component {
     const params = this.getHashParams();
     const token = params.access_token;
     if (token) {
-      console.log(token)
       spotifyApi.setAccessToken(token);
       this.playerCheckInterval = setInterval(() => this.checkForPlayer(token), 1000);
       this.checkForPlayer(token)
@@ -51,7 +50,6 @@ class App extends Component {
 
   checkForPlayer(token) {
     if (window.Spotify) {
-      console.log(token)
       clearInterval(this.playerCheckInterval);
       this.player = new window.Spotify.Player({
         name: "Agnes Spotify Player",
@@ -74,13 +72,14 @@ class App extends Component {
     this.player.on('playback_error', e => { console.error(e); });
 
     // Playback status updates
-    this.player.on('player_state_changed', state => { console.log(state); });
+    this.player.on('player_state_changed', state => this.onStateChanged(state));
 
     // Ready
-    this.player.on('ready', data => {
+    this.player.on('ready', async data => {
       let { device_id } = data;
       console.log("Let the music play on!");
-      this.setState({ deviceId: device_id });
+      await this.setState({ deviceId: device_id });
+      this.transferPlaybackHere();
     });
   }
 
@@ -94,6 +93,53 @@ class App extends Component {
             this.getAnalysis(info.audio_features)
           })
         })
+  }
+
+  onStateChanged(state) {
+    console.log('stateChanged')
+    // if we're no longer listening to music, we'll get a null state.
+    if (state !== null) {
+      const {
+        current_track: currentTrack,
+        position,
+        duration,
+      } = state.track_window;
+      const trackName = currentTrack.name;
+      const albumName = currentTrack.album.name;
+      const artistName = currentTrack.artists
+        .map(artist => artist.name)
+        .join(", ");
+      const playing = !state.paused;
+      this.setState({
+        position,
+        duration,
+        trackName,
+        albumName,
+        artistName,
+        playing
+      });
+      console.log(this.state)
+    }
+  }
+
+  onPrevClick() {
+    this.player.previousTrack();
+  }
+
+  onPlayClick() {
+    this.player.togglePlay();
+  }
+
+  onNextClick() {
+    this.player.nextTrack();
+  }
+
+  transferPlaybackHere() {
+    console.log('transferring playback')
+    const { deviceId, token } = this.state;
+    spotifyApi.transferMyPlayback([deviceId]).then(val => {
+      console.log(val)
+    })
   }
 
   getLocalConcerts(){
@@ -197,6 +243,16 @@ class App extends Component {
           </RadarChart>
           </div>
         }
+        <div>
+          <p>Artist: {this.state.artistName}</p>
+          <p>Track: {this.state.trackName}</p>
+          <p>Album: {this.state.albumName}</p>
+          <p>
+          <button onClick={() => this.onPrevClick()}>Previous</button>
+          <button onClick={() => this.onPlayClick()}>{this.state.playing ? "Pause" : "Play"}</button>
+          <button onClick={() => this.onNextClick()}>Next</button>
+          </p>
+        </div>
         { this.state.loggedIn &&
           <div>
             <button onClick={() => this.getMood()}>
