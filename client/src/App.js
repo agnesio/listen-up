@@ -137,7 +137,8 @@ class App extends Component {
   playSong(song) {
     let data = {'device_id' : [this.state.deviceId], 'uris' : [song]}
     spotifyApi.play(data).then(resp => {
-      console.log(resp)
+    }).catch(err => {
+      console.log(err)
     })
   }
 
@@ -248,7 +249,9 @@ class App extends Component {
   render() {
     return (
       <div className='App'>
-        <a href='http://localhost:8888'> Login to Spotify </a>
+        {this.state.loggedin == false &&
+          <a href='http://localhost:8888'> Login to Spotify </a>
+        }
         {this.state.hipster != 0 &&
           <div>
             <h1>
@@ -275,18 +278,18 @@ class App extends Component {
           </RadarChart>
           </div>
         }
-        <div>
-          <p>Artist: {this.state.artistName}</p>
-          <p>Track: {this.state.trackName}</p>
-          <p>Album: {this.state.albumName}</p>
-          <p>
-          <button onClick={() => this.onPrevClick()}>Previous</button>
-          <button onClick={() => this.onPlayClick()}>{this.state.playing ? "Pause" : "Play"}</button>
-          <button onClick={() => this.onNextClick()}>Next</button>
-          </p>
-        </div>
         { this.state.loggedIn &&
           <div>
+            <div>
+              <p>Artist: {this.state.artistName}</p>
+              <p>Track: {this.state.trackName}</p>
+              <p>Album: {this.state.albumName}</p>
+              <p>
+              <button onClick={() => this.onPrevClick()}>Previous</button>
+              <button onClick={() => this.onPlayClick()}>{this.state.playing ? "Pause" : "Play"}</button>
+              <button onClick={() => this.onNextClick()}>Next</button>
+              </p>
+            </div>
             <button onClick={() => this.getMood()}>
               Analyze My Last 50 Songs
             </button>
@@ -298,9 +301,10 @@ class App extends Component {
             </button>
           </div>
         }
-        { this.state.artistTracks &&
+        { this.state.artistTracks.length > 0 &&
           <table >
             <tr>
+              <th></th>
               <th>Artist</th>
               <th>Track</th>
             </tr>
