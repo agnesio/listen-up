@@ -134,6 +134,13 @@ class App extends Component {
     this.player.nextTrack();
   }
 
+  playSong(song) {
+    let data = {'device_id' : [this.state.deviceId], 'uris' : [song]}
+    spotifyApi.play(data).then(resp => {
+      console.log(resp)
+    })
+  }
+
   transferPlaybackHere() {
     console.log('transferring playback')
     const { deviceId, token } = this.state;
@@ -150,13 +157,38 @@ class App extends Component {
       spotifyApi.searchArtists(a).then(val => {
         if (val && val.artists.items.length > 0){
           spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
-            tracks.concat(result.tracks.slice(0,3))
-            this.setState({
-              artistTracks: tracks,
-            })
+            tracks = tracks.concat(result.tracks.slice(0,3))
+            if(artists.indexOf(a) == artists.length - 1){
+             this.formatTracks(tracks);
+            }
           })
         }
       })
+    })
+  }
+
+  formatTracks(tracks) {
+    console.log(tracks)
+    let formattedTracks = tracks.map((track) =>
+      <tr>
+        <td>
+        <button onClick={() => this.playSong(track.uri)}>
+          Play
+        </button>
+        </td>
+        <td>
+        {track.artists
+          .map(artist => artist.name)
+          .join(", ")}
+        </td>
+        <td>
+          {track.name}
+        </td>
+      </tr>
+    )
+
+    this.setState({
+      artistTracks: formattedTracks
     })
   }
 
@@ -265,6 +297,15 @@ class App extends Component {
               Get Music for Upcoming Concerts
             </button>
           </div>
+        }
+        { this.state.artistTracks &&
+          <table >
+            <tr>
+              <th>Artist</th>
+              <th>Track</th>
+            </tr>
+            {this.state.artistTracks}
+          </table>
         }
       </div>
     )
