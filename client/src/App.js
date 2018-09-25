@@ -3,7 +3,9 @@ import logo from './logo.svg';
 import SpotifyWebApi from 'spotify-web-api-js';
 import './App.css';
 import {RadarChart, Radar, PolarRadiusAxis, PolarAngleAxis, PolarGrid} from 'recharts';
+import Songkick from 'songkick-api';
 const spotifyApi = new SpotifyWebApi();
+const kick = new Songkick('C8TJ7xmSqeYneurG');
 
 
 class App extends Component {
@@ -23,7 +25,7 @@ class App extends Component {
       token: token,
       hipster: 0,
       offset: 0,
-      artistTracks: [],
+      concerts: [],
       error: "",
       trackName: "Track Name",
       artistName: "Artist Name",
@@ -31,8 +33,11 @@ class App extends Component {
       playing: false,
       position: 0,
       duration: 0,
-      deviceId: ""
+      deviceId: "",
+      loading: true
     }
+    this.getMood()
+
   }
 
   // getting the parameters sent from oAuth in server
@@ -93,10 +98,61 @@ class App extends Component {
             this.getAnalysis(info.audio_features)
           })
         })
+    this.getLoc()
+  }
+
+  getLoc(){
+    kick.searchLocations({'query': 'Washington, DC'}).then(resp => {
+      let id = resp[0]['metroArea']['id']
+      console.log(id)
+      kick.getMetroAreaCalendar(id).then(events => {
+        this.formatConcerts(events)
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  formatConcerts(events) {
+    let concerts = [];
+    events.forEach(e => {
+      let artists = e.performance.map(e => e.displayName)
+      concerts.push({
+        'displayName' : e.displayName,
+        'artists' : artists,
+        'start': e.start,
+        'venue' : e.venue.displayName,
+        'tracks' : [],
+        'pop' : e.popularity
+      })
+    })
+    this.getArtistTracks(concerts)
+  }
+
+  getArtistTracks(concerts) {
+
+    concerts.forEach(c => {
+      c['artists'].forEach(a => {
+        spotifyApi.searchArtists(a).then(val => {
+          if (val && val.artists.items.length > 0){
+            spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
+              c['tracks'] = c['tracks'].concat(result.tracks.slice(0,3))
+              if(concerts.indexOf(c) == concerts.length - 1){
+                this.setState({
+                  'concerts' : concerts,
+                  'loading' : false,
+                })
+                console.log(concerts)
+              }
+            })
+          }
+        })
+      })
+    })
+    console.log(concerts)
   }
 
   onStateChanged(state) {
-    console.log('stateChanged')
     // if we're no longer listening to music, we'll get a null state.
     if (state !== null) {
       const {
@@ -150,48 +206,29 @@ class App extends Component {
     })
   }
 
-  getLocalConcerts(){
-    let artists = ['Naked Giants', 'Don Babylon', 'Car Seat Headrest', 'Nightmare Air',
-    'Gary Numan', 'Sweater Beats', 'Andrew Luce', 'Weathan', 'Matthew Thiessen And The Earthquakes', 'Owl City']
-    let tracks = this.state.artistTracks
-    artists.forEach(a => {
-      spotifyApi.searchArtists(a).then(val => {
-        if (val && val.artists.items.length > 0){
-          spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
-            tracks = tracks.concat(result.tracks.slice(0,3))
-            if(artists.indexOf(a) == artists.length - 1){
-             this.formatTracks(tracks);
-            }
-          })
-        }
-      })
-    })
-  }
-
-  formatTracks(tracks) {
-    console.log(tracks)
-    let formattedTracks = tracks.map((track) =>
-      <tr>
-        <td>
-        <button onClick={() => this.playSong(track.uri)}>
-          Play
-        </button>
-        </td>
-        <td>
-        {track.artists
-          .map(artist => artist.name)
-          .join(", ")}
-        </td>
-        <td>
-          {track.name}
-        </td>
-      </tr>
-    )
-
-    this.setState({
-      artistTracks: formattedTracks
-    })
-  }
+  // getMatch(track) {
+  //   let sum = 0;
+  //   this.state.data.forEach(d => {
+  //     // console.log(track[d.subject.toLowerCase()])
+  //     // sum += (100 - Math.abs(track[d.subject.toLowerCase()] - d.A))
+  //   })
+  //   return sum
+  // }
+  //
+  // getTracksData(tracks) {
+  //   let ids = tracks.map(t => t.id)
+  //   spotifyApi.getAudioFeaturesForTracks(ids).then((info) => {
+  //     let dataTracks = [];
+  //     tracks.forEach((t, i) => {
+  //       dataTracks.push(Object.assign({}, t, info.audio_features[i]))
+  //       console.log(dataTracks[i])
+  //       dataTracks[i]['match'] = this.getMatch(dataTracks[i])
+  //       if(dataTracks.length == tracks.length) {
+  //         this.formatTracks(dataTracks)
+  //       }
+  //     })
+  //   })
+  // }
 
   getStatus(){
     let pop = this.state.hipster;
@@ -226,12 +263,12 @@ class App extends Component {
       v: 0.00
     }
     stuff.forEach((s) => {
-      raw.a = (raw.a + s.acousticness);
-      raw.d = (raw.d + s.danceability);
-      raw.e = (raw.e + s.energy);
-      raw.i = (raw.i + s.instrumentalness);
-      raw.s = (raw.s + s.speechiness);
-      raw.v = (raw.v + s.valence);
+      raw.a += s.acousticness;
+      raw.d += s.danceability;
+      raw.e += s.energy;
+      raw.i += s.instrumentalness;
+      raw.s += s.speechiness;
+      raw.v += s.valence;
     })
 
     this.setState({
@@ -249,7 +286,7 @@ class App extends Component {
   render() {
     return (
       <div className='App'>
-        {this.state.loggedin == false &&
+        {this.state.loggedIn == false &&
           <a href='http://localhost:8888'> Login to Spotify </a>
         }
         {this.state.hipster != 0 &&
@@ -268,16 +305,6 @@ class App extends Component {
             </h2>
           </div>
         }
-        {this.state.data.length > 0 &&
-          <div className="chart">
-          <RadarChart className="analysisChart" cx={200} cy={200} outerRadius={100} width={400} height={400} data={this.state.data}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey="subject"/>
-            <PolarRadiusAxis/>
-            <Radar dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6}/>
-          </RadarChart>
-          </div>
-        }
         { this.state.loggedIn &&
           <div>
             <div>
@@ -290,9 +317,6 @@ class App extends Component {
               <button onClick={() => this.onNextClick()}>Next</button>
               </p>
             </div>
-            <button onClick={() => this.getMood()}>
-              Analyze My Last 50 Songs
-            </button>
             <button onClick={() => this.getStatus()}>
               Am I A Hipster?
             </button>
@@ -301,15 +325,28 @@ class App extends Component {
             </button>
           </div>
         }
-        { this.state.artistTracks.length > 0 &&
-          <table >
-            <tr>
-              <th></th>
-              <th>Artist</th>
-              <th>Track</th>
-            </tr>
-            {this.state.artistTracks}
-          </table>
+        { this.state.loading == false &&
+            (this.state.concerts.map(c =>
+              <div>
+                <h2>{c.displayName}</h2>
+                <h3>{c.venue}</h3>
+                <h3>{c.start['date']} {c.start['time']}</h3>
+                <h4>{c.pop}</h4>
+                <table>
+                  {c.tracks.map(t =>
+                    <tr>
+                      <td><button onClick={() => this.playSong(t.uri)}> Play </button></td>
+                      <td>{t.name}</td>
+                      <td>
+                        {t.artists
+                        .map(artist => artist.name)
+                        .join(", ")}
+                      </td>
+                    </tr>
+                  )}
+                </table>
+              </div>
+            ))
         }
       </div>
     )
