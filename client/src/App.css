@@ -38,3 +38,7 @@ div, button {
   text-align: center;
   display:inline !important;
 }
+
+table {
+  width: 100%;
+}

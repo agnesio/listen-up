@@ -18,12 +18,14 @@ class App extends Component {
       spotifyApi.setAccessToken(token);
       this.playerCheckInterval = setInterval(() => this.checkForPlayer(token), 1000);
       this.checkForPlayer(token)
+      this.getStatus()
     }
     this.state = {
       loggedIn: token ? true : false,
       data: [],
       token: token,
       hipster: 0,
+      artists: [],
       offset: 0,
       concerts: [],
       error: "",
@@ -34,10 +36,11 @@ class App extends Component {
       position: 0,
       duration: 0,
       deviceId: "",
-      loading: true
+      loading: true,
+      genreMatrix: [],
+      genreCount: 0,
+      page: 1
     }
-    this.getMood()
-
   }
 
   // getting the parameters sent from oAuth in server
@@ -82,30 +85,20 @@ class App extends Component {
     // Ready
     this.player.on('ready', async data => {
       let { device_id } = data;
-      console.log("Let the music play on!");
       await this.setState({ deviceId: device_id });
       this.transferPlaybackHere();
     });
   }
 
-  getMood(){
-    let currAnalysis = [];
-    spotifyApi.getMyRecentlyPlayedTracks()
-      .then((response) => {
-          let ids = response.items.map(r => r.track.id)
-          spotifyApi.getAudioFeaturesForTracks(ids).then((info) => {
-            console.log(info)
-            this.getAnalysis(info.audio_features)
-          })
-        })
-    this.getLoc()
-  }
-
   getLoc(){
     kick.searchLocations({'query': 'Washington, DC'}).then(resp => {
       let id = resp[0]['metroArea']['id']
-      console.log(id)
-      kick.getMetroAreaCalendar(id).then(events => {
+      kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : this.state.page}).then(events => {
+        let curr = this.state.page += 1
+        this.setState({
+          page: curr
+        })
+        console.log(this.state.page)
         this.formatConcerts(events)
       })
     }).catch(err => {
@@ -114,43 +107,58 @@ class App extends Component {
   }
 
   formatConcerts(events) {
-    let concerts = [];
+    let concerts = []
     events.forEach(e => {
-      let artists = e.performance.map(e => e.displayName)
-      concerts.push({
-        'displayName' : e.displayName,
-        'artists' : artists,
-        'start': e.start,
-        'venue' : e.venue.displayName,
-        'tracks' : [],
-        'pop' : e.popularity
-      })
+      if(e.displayName.indexOf('PRIVATE') == -1 && e.displayName.indexOf('CANCELLED') == -1 && e.popularity < 0.01){
+        let artists = e.performance.map(e => e.artist)
+        concerts.push({
+          'displayName' : e.displayName,
+          'artists' : artists,
+          'start': e.start,
+          'venue' : e.venue.displayName,
+          'tracks' : [],
+          'pop' : e.popularity
+        })
+      }
     })
     this.getArtistTracks(concerts)
   }
 
   getArtistTracks(concerts) {
-
     concerts.forEach(c => {
       c['artists'].forEach(a => {
-        spotifyApi.searchArtists(a).then(val => {
+        spotifyApi.searchArtists(a['displayName']).then(val => {
           if (val && val.artists.items.length > 0){
-            spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
-              c['tracks'] = c['tracks'].concat(result.tracks.slice(0,3))
-              if(concerts.indexOf(c) == concerts.length - 1){
-                this.setState({
-                  'concerts' : concerts,
-                  'loading' : false,
+              let match = 0
+              if(this.state.artists.indexOf(val.artists.items[0]['id']) != -1) {
+                match = 100
+              } else {
+                val.artists.items[0]['genres'].forEach(ag => {
+                  if(this.state.genreMatrix.hasOwnProperty(ag)){
+                    match += (this.state.genreMatrix[ag] / this.state.genreCount)
+                  }
                 })
-                console.log(concerts)
+                match = match * 150
               }
-            })
+              a['match'] = match.toFixed(2)
+              spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
+                c['tracks'] = c['tracks'].concat(result.tracks.slice(0,3))
+                if(concerts.indexOf(c) == concerts.length - 1){
+                  concerts.concat(this.state.concerts)
+                  this.setState({
+                    'concerts' : concerts,
+                    'loading' : false,
+                  })
+                }
+              }).catch(err => {
+                console.log(err)
+              })
           }
         })
       })
     })
-    console.log(concerts)
   }
+
 
   onStateChanged(state) {
     // if we're no longer listening to music, we'll get a null state.
@@ -174,7 +182,6 @@ class App extends Component {
         artistName,
         playing
       });
-      console.log(this.state)
     }
   }
 
@@ -206,89 +213,80 @@ class App extends Component {
     })
   }
 
-  // getMatch(track) {
-  //   let sum = 0;
-  //   this.state.data.forEach(d => {
-  //     // console.log(track[d.subject.toLowerCase()])
-  //     // sum += (100 - Math.abs(track[d.subject.toLowerCase()] - d.A))
-  //   })
-  //   return sum
-  // }
-  //
-  // getTracksData(tracks) {
-  //   let ids = tracks.map(t => t.id)
-  //   spotifyApi.getAudioFeaturesForTracks(ids).then((info) => {
-  //     let dataTracks = [];
-  //     tracks.forEach((t, i) => {
-  //       dataTracks.push(Object.assign({}, t, info.audio_features[i]))
-  //       console.log(dataTracks[i])
-  //       dataTracks[i]['match'] = this.getMatch(dataTracks[i])
-  //       if(dataTracks.length == tracks.length) {
-  //         this.formatTracks(dataTracks)
-  //       }
-  //     })
-  //   })
-  // }
-
-  getStatus(){
-    let pop = this.state.hipster;
-    spotifyApi.getMySavedTracks(this.state.offset).then((response) => {
+  getStatus(pop?, total?, offset?, artistsArray?){
+    let popularity = pop ? pop : 0;
+    let count = total ? total : 0;
+    let off = offset ? offset : 0;
+    let artists = artistsArray  ? artistsArray : [];
+    spotifyApi.getMySavedTracks(off).then((response) => {
       response.items.forEach(i => {
-        pop += i.track.popularity;
+        popularity += i.track.popularity;
+        i.track.artists.forEach(a => {
+          artists = artists.concat(a.id)
+        })
       })
-      pop = pop / response.items.length;
-      if(response.next) {
-        let off = this.state.offset += 50
-        this.setState({
-          offset: off
-        })
-        this.getStatus()
+      count += response.items.length;
+    if(response.next) {
+        off += 50;
+        this.getStatus(popularity, count, off, artists)
     } else {
-        console.log(pop)
-        pop = pop.toFixed(2)
+        let hipster = (popularity / count).toFixed(2)
         this.setState({
-          hipster : pop
+          hipster : hipster,
+          artists: artists
         })
+        this.getGenreMatrix(artists)
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  getGenreMatrix(artists, offset?, genres){
+    let off = offset ? offset : 0;
+    let genreMatrix = genres ? genres : [];
+    let artistArray = artists.slice(off, off+49)
+    spotifyApi.getArtists(artistArray).then(val => {
+      val.artists.forEach(a => {
+        a.genres.forEach(g => {
+          genreMatrix = genreMatrix.concat(g)
+        })
+      })
+      if(artists.length > off+49){
+        this.getGenreMatrix(artists, off+49, genreMatrix)
+      } else {
+        this.processGenres(genreMatrix)
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  processGenres(genres){
+    let genreMatrix = []
+    let a = [];
+    genres.forEach(g => {
+      let index = a.indexOf(g)
+      if(index == -1){
+        a.push(g);
+        genreMatrix[g] = 1
+      } else {
+        genreMatrix[g] = genreMatrix[g]+1
       }
     })
-  }
-
-  getAnalysis(stuff) {
-    let raw = {
-      a: 0.00,
-      d: 0.00,
-      e: 0.00,
-      i: 0.00,
-      s: 0.00,
-      v: 0.00
-    }
-    stuff.forEach((s) => {
-      raw.a += s.acousticness;
-      raw.d += s.danceability;
-      raw.e += s.energy;
-      raw.i += s.instrumentalness;
-      raw.s += s.speechiness;
-      raw.v += s.valence;
-    })
-
     this.setState({
-      data: [
-      { subject: 'Acousticness', A: raw.a * 100 / stuff.length, fullMark: 100 },
-      { subject: 'Danceability', A: raw.d * 100 / stuff.length, fullMark: 100},
-      { subject: 'Energy', A: raw.e * 100 / stuff.length, fullMark: 100},
-      { subject: 'Instrumentalness', A: raw.i * 100 / stuff.length, fullMark: 100},
-      { subject: 'Speechiness', A: raw.s * 100 / stuff.length, fullMark: 100},
-      { subject: 'Valence', A: raw.v * 100 / stuff.length, fullMark: 100}
-    ]
+      'genreMatrix' : genreMatrix,
+      'genreCount' : genres.length
     })
+    console.log(genreMatrix)
+    this.getLoc()
   }
+
 
   render() {
     return (
       <div className='App'>
-        {this.state.loggedIn == false &&
           <a href='http://localhost:8888'> Login to Spotify </a>
-        }
         {this.state.hipster != 0 &&
           <div>
             <h1>
@@ -317,21 +315,23 @@ class App extends Component {
               <button onClick={() => this.onNextClick()}>Next</button>
               </p>
             </div>
-            <button onClick={() => this.getStatus()}>
-              Am I A Hipster?
-            </button>
-            <button onClick={() => this.getLocalConcerts()}>
-              Get Music for Upcoming Concerts
-            </button>
           </div>
         }
         { this.state.loading == false &&
             (this.state.concerts.map(c =>
-              <div>
+              <div className="concerts">
                 <h2>{c.displayName}</h2>
                 <h3>{c.venue}</h3>
                 <h3>{c.start['date']} {c.start['time']}</h3>
                 <h4>{c.pop}</h4>
+                <table>
+                  {c.artists.map(a =>
+                    <tr>
+                      <td>{a.displayName}</td>
+                      <td>{a.match}%</td>
+                    </tr>
+                  )}
+                </table>
                 <table>
                   {c.tracks.map(t =>
                     <tr>
@@ -348,6 +348,7 @@ class App extends Component {
               </div>
             ))
         }
+      <button onClick={() => this.getLoc()}>Load More </button>
       </div>
     )
   }
