@@ -1,7 +1,5 @@
 .App {
   text-align: center;
-  /* width: 1000px;
-  height: 1000px; */
 }
 
 .App-logo {
@@ -39,6 +37,17 @@ div, button {
   display:inline !important;
 }
 
-table {
-  width: 100%;
+.landing{
+  text-align: center;
+  margin-top: 30vh;
+}
+
+.goButton {
+  margin-top: 10vh;
+  height: 7vh;
+  width: 10vw;
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  font-size: 15px;
 }

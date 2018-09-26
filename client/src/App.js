@@ -14,9 +14,14 @@ class App extends Component {
   render() {
     return (
       <div className="">
-
-        {this.props.loggedIn == false && (
-          <a href='http://localhost:8888'> Login to Spotify </a>)}
+        {this.props.loggedIn ?
+          <h1>LOGGED IN</h1> :
+          <div className="landing">
+            <h1> How Hipster Are You? </h1>
+            <p> Let us analyze your Spotify library to find out! </p>
+            <button href='http://localhost:8888' className="goButton"> Go </button>
+          </div>
+        }
       </div>
     );
   }
@@ -28,7 +33,8 @@ App.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    loggedIn: state.auth.loggedIn
+    loggedIn: state.auth.loggedIn,
+    concerts: state.concerts
   };
 }
 
