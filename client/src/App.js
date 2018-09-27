@@ -58,7 +58,7 @@ class App extends Component {
           <div className="landing">
             <h1> How Hipster Are You? </h1>
             <p> Let us analyze your Spotify library to find out! </p>
-            <a href='http://ec2-34-207-76-65.compute-1.amazonaws.com/login'><button className="goButton"> Go </button></a>
+            <a href='http://ec2-34-207-76-65.compute-1.amazonaws.com:8000/login'><button className="goButton"> Go </button></a>
           </div>
         }
       </div>
