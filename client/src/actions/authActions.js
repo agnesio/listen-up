@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { getAnalytics } from './userActions'
+import axios from 'axios'
 const spotifyApi = new SpotifyWebApi();
 
 export function setLoggedIn(token) {
@@ -11,11 +12,15 @@ export function setLogOut() {
   return {type: types.LOGOUT};
 }
 
+
 export function login() {
+    console.log('loggin in')
     // let playerCheckInterval = null;
     const params = getHashParams();
     const token = params.access_token;
+    console.log(params)
     if (token) {
+      console.log(token)
       spotifyApi.setAccessToken(token);
       return dispatch => {
         dispatch(setLoggedIn(token))

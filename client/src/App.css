@@ -51,3 +51,22 @@ div, button {
   border-radius: 20px;
   font-size: 15px;
 }
+
+.hipsterPage {
+  text-align: center;
+  margin-top: 30vh;
+}
+
+.shareIcons{
+  text-align: center;
+  font-size: 4vw;
+  color: white;
+}
+
+.shareIconButton {
+  display:inline-block;
+}
+
+.shareIcon{
+  margin-top: 1.5vw;
+}
