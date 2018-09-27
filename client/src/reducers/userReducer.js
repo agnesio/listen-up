@@ -17,6 +17,10 @@ export default function hipsterRating(state=initialState.user, action) {
         genreMatrix: action.genreMatrix,
         genreCount: action.genreCount
       })
+    case types.SET_LOADING_MESSAGE:
+      return Object.assign({}, state, {
+        loadingMessage: action.name
+      })
     default:
       return state
   }

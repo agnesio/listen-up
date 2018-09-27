@@ -10,6 +10,7 @@ export function getAnalytics(pop?, total?, offset?, artistsArray?) {
   let off = offset ? offset : 0;
   let artists = artistsArray  ? artistsArray : [];
   spotifyApi.getMySavedTracks(off).then((response) => {
+    dispatch(setLoadingMessage(response.items[0].track.artists[0].name))
     response.items.forEach(i => {
       popularity += i.track.popularity;
       i.track.artists.forEach(a => {
@@ -77,6 +78,9 @@ export function setGenres(genreMatrix, genreCount) {
   return {type: types.SET_GENRES, genreMatrix: genreMatrix, genreCount: genreCount}
 }
 
+export function setLoadingMessage(name){
+  return {type: types.SET_LOADING_MESSAGE, name: name}
+}
 
 export function setHipster(rating){
   return {type: types.HIPSTER_RATING, rating:rating};

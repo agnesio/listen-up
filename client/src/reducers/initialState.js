@@ -11,6 +11,7 @@ export default {
     hipster: null,
     genreMatrix: [],
     genreCount: 0,
+    loadingMessage: '',
   },
   loading: false
 };

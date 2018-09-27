@@ -14,13 +14,10 @@ export function setLogOut() {
 
 
 export function login() {
-    console.log('loggin in')
     // let playerCheckInterval = null;
     const params = getHashParams();
     const token = params.access_token;
-    console.log(params)
     if (token) {
-      console.log(token)
       spotifyApi.setAccessToken(token);
       return dispatch => {
         dispatch(setLoggedIn(token))

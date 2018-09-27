@@ -1,35 +1,29 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
   color: white;
+  height: 100vh;
+  width: 100vw;
+  margin: 0 !important;
+  background-color: rgb(38, 33, 50);
+  position: relative;
 }
 
-.App-title {
-  font-size: 1.5em;
+h1, h2, h3, h4, h5, p {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 100;
 }
 
-.App-intro {
-  font-size: large;
+h1 {
+  font-size: 7vw;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+h2 {
+  font-size: 3vw;
+  font-weight: 200;
 }
 
-/* client/src/App.css */
-div, button {
-  margin: 10px;
+h3 {
+  font-size: 2.5vw;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .analysisChart{
@@ -39,34 +33,61 @@ div, button {
 
 .landing{
   text-align: center;
-  margin-top: 30vh;
+  padding: 22vh 10vw 0vh 10vw;
+  z-index: 100;
+}
+
+.loadingPage{
+  text-align: center;
+  padding-top: 40vh;
+}
+
+.noParticle{
+  position:absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
 }
 
 .goButton {
-  margin-top: 10vh;
-  height: 7vh;
-  width: 10vw;
-  background-color: black;
-  color: white;
-  border-radius: 20px;
-  font-size: 15px;
+  font-family: 'Raleway', sans-serif;
+  margin-top: 7vh;
+  height: 10vh;
+  width: 12vw;
+  background-color: white;
+  color: rgb(38, 33, 50);
+  border-radius: 10vw;
+  border: none;
+  font-size: 3vw;
 }
 
 .hipsterPage {
   text-align: center;
-  margin-top: 30vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.share {
+  margin: 10vh 0vw 10vh 0vw;
 }
 
 .shareIcons{
   text-align: center;
   font-size: 4vw;
-  color: white;
+}
+
+.percentMessage h1{
+  font-weight: 300;
+}
+
+.percentMessage h2{
+  margin-top: -3vh;
 }
 
 .shareIconButton {
   display:inline-block;
-}
-
-.shareIcon{
-  margin-top: 1.5vw;
+  color: white;
+  padding: 0vh 2vw;
 }
