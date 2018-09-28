@@ -31,25 +31,26 @@ class Hipster extends Component {
           (this.props.hipster ?
             <div>
             <div className="hipsterPage">
-            <div className="share">
-              <div className="shareIcons">
-                <FacebookShareButton url="areyouhipster.com" children="foo" quote={this.props.quote} className="shareIconButton">
-                  <FacebookIcon size={60} round={true}/>
-                </FacebookShareButton>
-                <TwitterShareButton url="areyouhipster.com" children="foo"  title={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
-                  <TwitterIcon size={60} round={true}/>
-                </TwitterShareButton>
-                <RedditShareButton url="areyouhipster.com" children="foo" title={this.props.quote}  className="shareIconButton">
-                  <RedditIcon size={60} round={true}/>
-                </RedditShareButton>
-                <EmailShareButton url="areyouhipster.com" children="foo"  subject="Hipster Test" body={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
-                  <EmailIcon size={60} round={true}/>
-                </EmailShareButton>
-              </div>
-            </div>
               <div className="percentMessage">
                 <h1>{100 - this.props.hipster}% Hipster</h1>
                 <h2>{this.props.userMessage}</h2>
+              </div>
+              <div className="share">
+                <h3>Share how hipster you are with your friends</h3>
+                <div className="shareIcons">
+                  <FacebookShareButton url="areyouhipster.com" children="foo" quote={this.props.quote} className="shareIconButton">
+                    <FacebookIcon size={60} round={true}/>
+                  </FacebookShareButton>
+                  <TwitterShareButton url="areyouhipster.com" children="foo"  title={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
+                    <TwitterIcon size={60} round={true}/>
+                  </TwitterShareButton>
+                  <RedditShareButton url="areyouhipster.com" children="foo" title={this.props.quote}  className="shareIconButton">
+                    <RedditIcon size={60} round={true}/>
+                  </RedditShareButton>
+                  <EmailShareButton url="areyouhipster.com" children="foo"  subject="Hipster Test" body={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
+                    <EmailIcon size={60} round={true}/>
+                  </EmailShareButton>
+                </div>
               </div>
               <div className="joinBeta">
               {this.props.hide ?

@@ -70,28 +70,22 @@ a {
   padding: 0vh 20vw;
 }
 
-.share {
-  display: flex;
-  position: absolute;
-  top: 20px;
-  right: 0;
-}
-
 .percentMessage h1{
   margin-bottom: 0 !important;
   font-weight: 300;
-  padding-top: 20vh;
+  padding: 20vh 10vw 0vh 10vw;
 }
 
 .percentMessage h2{
   margin-top: 5px !important;
-  padding-bottom: 10vh;
+  padding-bottom: 5vh;
 }
 
 .shareIconButton {
   display:inline-block;
   color: white;
   padding: 0vh 10px;
+  margin-bottom: 10px;
 }
 
 
