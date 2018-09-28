@@ -21,6 +21,22 @@ export default function hipsterRating(state=initialState.user, action) {
       return Object.assign({}, state, {
         loadingMessage: action.name
       })
+    case types.UPDATE_EMAIL:
+      return Object.assign({}, state, {
+        email: action.email
+      })
+    case types.SUBMIT_EMAIL:
+      return Object.assign({}, state, {
+        submitting: true
+      })
+    case types.OPEN_BETA:
+      return Object.assign({}, state, {
+        betaOpen: true
+      })
+    case types.HIDE_FORM:
+      return Object.assign({}, state, {
+        submitted: true
+      })
     default:
       return state
   }

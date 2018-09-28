@@ -12,6 +12,10 @@ export default {
     genreMatrix: [],
     genreCount: 0,
     loadingMessage: '',
+    email: '',
+    submitted: false,
+    submitting: false,
+    betaOpen: false,
   },
-  loading: false
+  loading: false,
 };

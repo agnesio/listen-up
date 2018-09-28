@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { getConcerts } from './concertActions'
+import axios from 'axios'
 const spotifyApi = new SpotifyWebApi();
 
 export function getAnalytics(pop?, total?, offset?, artistsArray?) {
@@ -88,4 +89,34 @@ export function setHipster(rating){
 
 export function setArtists(artists){
   return {type: types.USER_ARTISTS, artists: artists}
+}
+
+export function updateEmail(email) {
+  return {type: types.UPDATE_EMAIL, email: email};
+}
+
+export function submitEmail(email) {
+return dispatch => {
+  if(email.trim() != '') {
+    console.log(email)
+    let url = 'https://q0arp55edk.execute-api.us-east-1.amazonaws.com/dev/setEmailsForAreYouHipster'
+    let data = {'email' : email, 'timestamp' : Date.now()}
+    axios.post(url, data).then(val => {
+      dispatch(changeEmailStatus())
+    })
+  }
+  }
+}
+
+export function changeEmailStatus() {
+  console.log('change email')
+  return {type: types.SUBMIT_EMAIL}
+}
+
+export function hideForm() {
+  return {type: types.HIDE_FORM}
+}
+
+export function openBeta() {
+  return {type: types.OPEN_BETA}
 }

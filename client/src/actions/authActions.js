@@ -44,6 +44,8 @@ function getHashParams() {
   }
   return hashParams;
 }
+
+
 //
 // checkForPlayer(token) {
 //   if (window.Spotify) {
