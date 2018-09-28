@@ -36,7 +36,7 @@ class Hipster extends Component {
                 <FacebookShareButton url="areyouhipster.com" children="foo" quote={this.props.quote} className="shareIconButton">
                   <FacebookIcon size={60} round={true}/>
                 </FacebookShareButton>
-                <TwitterShareButton url="areyouhipster.com" children="foo"  title={this.props.quote} className="shareIconButton">
+                <TwitterShareButton url="areyouhipster.com" children="foo"  title={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
                   <TwitterIcon size={60} round={true}/>
                 </TwitterShareButton>
                 <RedditShareButton url="areyouhipster.com" children="foo" title={this.props.quote}  className="shareIconButton">
