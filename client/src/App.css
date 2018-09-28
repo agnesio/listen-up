@@ -78,13 +78,14 @@ a {
 }
 
 .percentMessage h1{
+  margin-bottom: 0 !important;
   font-weight: 300;
   padding-top: 20vh;
 }
 
 .percentMessage h2{
-  margin-top: -3vh;
-  padding-bottom: 5vh;
+  margin-top: 5px !important;
+  padding-bottom: 10vh;
 }
 
 .shareIconButton {
@@ -108,7 +109,7 @@ a {
 
 input {
   background: transparent;
-  width: 25vw;
+  width: 40vw;
   color: white;
   border-radius: 10vw;
   border: solid white 1px;
@@ -130,6 +131,9 @@ input {
   border: none;
   font-size: 3vw;
 }
+.signup h3{
+  padding: 0vh 20vw;
+}
 
 @media (min-width:320px) { /* smartphones, iPhone, portrait 480x320 phones */
   h1 {
@@ -137,7 +141,7 @@ input {
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 200;
   }
 
@@ -154,6 +158,7 @@ input {
 
   input{
     font-size: 15px;
+    height: 20px;
   }
 
   .submitButton {
@@ -174,7 +179,7 @@ input {
   }
 
   h2 {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 200;
   }
 
@@ -190,7 +195,8 @@ input {
   }
 
   input{
-    font-size: 17px;
+    font-size: 20px;
+    height: 30px;
   }
 
 
@@ -211,7 +217,7 @@ input {
   }
 
   h2 {
-    font-size: 35px;
+    font-size: 32px;
     font-weight: 200;
   }
 
@@ -237,7 +243,8 @@ input {
   }
 
   input{
-    font-size: 30px;
+    font-size: 27px;
+    height: 35px;
   }
 
 

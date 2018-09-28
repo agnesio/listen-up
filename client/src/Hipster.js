@@ -22,7 +22,7 @@ import ParticleEffectButton from 'react-particle-effect-button'
 
 class Hipster extends Component {
 
-   //FOR PRODUCTION: Change IP Address from localhost:8888 to prod server
+   //FOR PRODUCTION: Change IP Address from localhost:8888 to server endpoint (either areyouhipster.com:8888/login/ or aws?)
 
   render() {
     return (
@@ -58,9 +58,9 @@ class Hipster extends Component {
                   <p> You are now on the list. </p>
                 </div>
                 :
-                <div>
+                <div className="signup">
                   <h3>Want to explore some new music? <br/> Sign up for our mailing list to hear when our Beta is ready!</h3>
-                  <input type="text" value={this.props.email} onChange={(event) => this.props.userActions.updateEmail(event.target.value)}/>
+                  <input type="text" placeholder="themosthipster@gmail.com" value={this.props.email} onChange={(event) => this.props.userActions.updateEmail(event.target.value)}/>
                 </div>
                 }
                 <ParticleEffectButton className="particleButton"
