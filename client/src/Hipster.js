@@ -42,7 +42,7 @@ class Hipster extends Component {
                 <RedditShareButton url="areyouhipster.com" children="foo" title={this.props.quote}  className="shareIconButton">
                   <RedditIcon size={60} round={true}/>
                 </RedditShareButton>
-                <EmailShareButton url="areyouhipster.com" children="foo"  subject="Hipster Test" body={this.props.quote} className="shareIconButton">
+                <EmailShareButton url="areyouhipster.com" children="foo"  subject="Hipster Test" body={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
                   <EmailIcon size={60} round={true}/>
                 </EmailShareButton>
               </div>
