@@ -60,7 +60,15 @@ class Hipster extends Component {
                 </div>
                 :
                 <div className="signup">
-                  <h3>Want to explore some new music? <br/> Sign up for our mailing list to hear when our Beta is ready!</h3>
+                  <h3>Want to explore some new music? <br/> Sign up for our mailing list to hear when our <span className="betaButton" onClick={() => this.props.userActions.openBeta()}>Beta</span> is ready!</h3>
+                  {this.props.betaOpen && (
+                    <div className="description">
+                      <p> We have an app in the works to connect music lovers to lesser known artists performing near them.
+                      You&#39;ll be able to filter artists based on their genre, popularity, how well they match with your current music taste, and much more.</p>
+                      <p> Listen directly on the platform, share with your friends, and maybe discover your new favorite band! Oh, and see them in person, if you&#39;re feelin&#39; it.</p>
+                      <p> Pretty cool, huh?</p>
+                    </div>
+                  )}
                   <input type="text" placeholder="themosthipster@gmail.com" value={this.props.email} onChange={(event) => this.props.userActions.updateEmail(event.target.value)}/>
                 </div>
                 }
@@ -72,15 +80,6 @@ class Hipster extends Component {
                   >
                   <button className="submitButton" onClick={() => this.props.userActions.submitEmail(this.props.email)}> Submit </button>
                 </ParticleEffectButton>
-                <p onClick={() => this.props.userActions.openBeta()}>Wait... what Beta?</p>
-                {this.props.betaOpen && (
-                  <div className="description">
-                    <p> We have an app in the works to connect music lovers to lesser known artists performing near them.
-                    You&#39;ll be able to filter artists based on their genre, popularity, how well they match with your current music taste, and much more.</p>
-                    <p> Listen directly on the platform, share with your friends, and maybe discover your new favorite band! Oh, and see them in person, if you&#39;re feelin&#39; it.</p>
-                    <p> Pretty cool, huh?</p>
-                  </div>
-                )}
               </div>
               <div className="legal">
                 <a href="https://app.termly.io/document/privacy-policy/23b4f8fd-d23f-48ee-9d04-3d2b2686aa42"> <p>Privacy Policy</p> </a>

@@ -44,6 +44,10 @@ a {
   z-index: 100;
 }
 
+.betaButton {
+  text-decoration: underline;
+}
+
 .goButton {
   font-family: 'Raleway', sans-serif;
   margin-top: 7vh;
