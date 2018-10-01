@@ -39,16 +39,16 @@ class Hipster extends Component {
                 <h3>Share how hipster you are with your friends</h3>
                 <div className="shareIcons">
                   <FacebookShareButton url="areyouhipster.com" children="foo" quote={this.props.quote} className="shareIconButton">
-                    <FacebookIcon size={60} round={true}/>
+                    <FacebookIcon size={60} round={true} onClick={() => this.props.userActions.share('facebook')}/>
                   </FacebookShareButton>
                   <TwitterShareButton url="areyouhipster.com" children="foo"  title={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
-                    <TwitterIcon size={60} round={true}/>
+                    <TwitterIcon size={60} round={true} onClick={() => this.props.userActions.share('twitter')}/>
                   </TwitterShareButton>
                   <RedditShareButton url="areyouhipster.com" children="foo" title={this.props.quote}  className="shareIconButton">
-                    <RedditIcon size={60} round={true}/>
+                    <RedditIcon size={60} round={true} onClick={() => this.props.userActions.share('reddit')}/>
                   </RedditShareButton>
                   <EmailShareButton url="areyouhipster.com" children="foo"  subject="Hipster Test" body={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
-                    <EmailIcon size={60} round={true}/>
+                    <EmailIcon size={60} round={true} onClick={() => this.props.userActions.share('email')}/>
                   </EmailShareButton>
                 </div>
               </div>

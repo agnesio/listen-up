@@ -108,6 +108,16 @@ return dispatch => {
   }
 }
 
+export function share(type) {
+  return dispatch => {
+    let url = 'https://q0arp55edk.execute-api.us-east-1.amazonaws.com/dev/setSocialAnalyticsForAreYouHipster'
+    let data = {'type' : type}
+    axios.post(url, data).then(val => {
+      console.log(val)
+    })
+  }
+}
+
 export function changeEmailStatus() {
   console.log('change email')
   return {type: types.SUBMIT_EMAIL}
@@ -118,5 +128,15 @@ export function hideForm() {
 }
 
 export function openBeta() {
+  return dispatch => {
+    let url = 'https://q0arp55edk.execute-api.us-east-1.amazonaws.com/dev/setSocialAnalyticsForAreYouHipster'
+    let data = {'type' : 'beta'}
+    axios.post(url, data).then(val => {
+      dispatch(betaReadMore())
+    })
+  }
+}
+
+export function betaReadMore() {
   return {type: types.OPEN_BETA}
 }
