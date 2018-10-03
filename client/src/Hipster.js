@@ -96,7 +96,7 @@ class Hipster extends Component {
           :
           <div className="landing">
             <h1> How Hipster Are You? </h1>
-            <h3> Let us analyze your Spotify library to find out </h3>
+            <h3> Let us analyze your Spotify library to find out  </h3>
             <a href='http://ec2-34-230-1-236.compute-1.amazonaws.com:8000/login'><button className="goButton"> GO </button></a>
           </div>
         }
