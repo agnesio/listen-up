@@ -30,64 +30,8 @@ class Hipster extends Component {
         {this.props.loggedIn ?
           (this.props.hipster ?
             <div>
-            <div className="hipsterPage">
-              <div className="percentMessage">
-                <h1>{100 - this.props.hipster}% Hipster</h1>
-                <h2>{this.props.userMessage}</h2>
-              </div>
-              <div className="share">
-                <h3>Share how hipster you are with your friends</h3>
-                <div className="shareIcons">
-                  <FacebookShareButton url="areyouhipster.com" children="foo" quote={this.props.quote} className="shareIconButton">
-                    <FacebookIcon size={60} round={true} onClick={() => this.props.userActions.share('facebook')}/>
-                  </FacebookShareButton>
-                  <TwitterShareButton url="areyouhipster.com" children="foo"  title={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
-                    <TwitterIcon size={60} round={true} onClick={() => this.props.userActions.share('twitter')}/>
-                  </TwitterShareButton>
-                  <RedditShareButton url="areyouhipster.com" children="foo" title={this.props.quote}  className="shareIconButton">
-                    <RedditIcon size={60} round={true} onClick={() => this.props.userActions.share('reddit')}/>
-                  </RedditShareButton>
-                  <EmailShareButton url="areyouhipster.com" children="foo"  subject="Hipster Test" body={this.props.quote + ' areyouhipster.com'} className="shareIconButton">
-                    <EmailIcon size={60} round={true} onClick={() => this.props.userActions.share('email')}/>
-                  </EmailShareButton>
-                </div>
-              </div>
-              <div className="joinBeta">
-              {this.props.hide ?
-                <div>
-                  <h3> Thanks for your interest! </h3>
-                  <p> You are now on the list. </p>
-                </div>
-                :
-                <div className="signup">
-                  <h3>Want to explore some new music? <br/> Sign up for our mailing list to hear when our <span className="betaButton" onClick={() => this.props.userActions.openBeta()}>Beta</span> is ready!</h3>
-                  {this.props.betaOpen && (
-                    <div className="description">
-                      <p> We have an app in the works to connect music lovers to lesser known artists performing near them.
-                      You&#39;ll be able to filter artists based on their genre, popularity, how well they match with your current music taste, and much more.</p>
-                      <p> Listen directly on the platform, share with your friends, and maybe discover your new favorite band! Oh, and see them in person, if you&#39;re feelin&#39; it.</p>
-                      <p> Pretty cool, huh?</p>
-                    </div>
-                  )}
-                  <input type="text" placeholder="themosthipster@gmail.com" value={this.props.email} onChange={(event) => this.props.userActions.updateEmail(event.target.value)}/>
-                </div>
-                }
-                <ParticleEffectButton className="particleButton"
-                  color='white'
-                  hidden={this.props.submitting}
-                  onComplete={() => this.props.userActions.hideForm()}
-                  particlesAmountCoefficient={1}
-                  >
-                  <button className="submitButton" onClick={() => this.props.userActions.submitEmail(this.props.email)}> Submit </button>
-                </ParticleEffectButton>
-              </div>
-              <div className="legal">
-                <a href="https://app.termly.io/document/privacy-policy/23b4f8fd-d23f-48ee-9d04-3d2b2686aa42"> <p>Privacy Policy</p> </a>
-                <a href="https://app.termly.io/document/terms-of-use-for-website/13103719-0f5d-40db-ae3d-8ff61debbac2"> <p>Terms of Use </p></a>
-              </div>
+              <p>Placeholder</p>
             </div>
-          </div>
-
             :
             <div className="loadingPage">
               <h1> {this.props.loadingMessage}...</h1>
@@ -95,8 +39,8 @@ class Hipster extends Component {
           )
           :
           <div className="landing">
-            <h1> How Hipster Are You? </h1>
-            <h3> Let us analyze your Spotify library to find out </h3>
+            <h1> Listen Up </h1>
+            <h3> Log in with Spotify to discover artists playing near you, for you </h3>
             <a href='http://ec2-34-207-76-65.compute-1.amazonaws.com:8000/login'><button className="goButton"> GO </button></a>
           </div>
         }
