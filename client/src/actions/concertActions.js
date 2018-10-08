@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import Songkick from 'songkick-api';
 import SpotifyWebApi from 'spotify-web-api-js';
+import {setLoading} from './authActions.js'
 const kick = new Songkick('C8TJ7xmSqeYneurG');
 const spotifyApi = new SpotifyWebApi();
 
@@ -32,46 +33,103 @@ export function formatConcerts(events) {
         'pop' : e.popularity,
         'url' : e.uri
       })
+      console.log(concerts)
     }
   })
   return dispatch => {
-    dispatch(getArtistTracks(concerts))
+    dispatch(getMatch(concerts))
   }
 }
 
-export function getArtistTracks(concerts) {
-  return dispatch => {
-  concerts.forEach(c => {
-    c['artists'].forEach(a => {
-      spotifyApi.searchArtists(a['displayName']).then(val => {
-        if (val && val.artists.items.length > 0){
-            // let match = 0
-            // if(this.state.artists.indexOf(val.artists.items[0]['id']) != -1) {
-            //   match = 100
-            // } else {
-            //   val.artists.items[0]['genres'].forEach(ag => {
-            //     if(this.state.genreMatrix.hasOwnProperty(ag)){
-            //       match += (this.state.genreMatrix[ag] / this.state.genreCount)
-            //     }
-            //   })
-            //   match = match * 150
-            // }
-            // a['match'] = match.toFixed(2)
-            spotifyApi.getArtistTopTracks(val.artists.items[0]['id'], 'from_token').then(result => {
-              let ind = c['artists'].indexOf(a)
-              c['artists'][ind]['tracks'] = result.tracks.slice(0,3)
-              if(concerts.indexOf(c) == concerts.length - 1){
-                dispatch(addConcerts(concerts))
+function checkIfValExists(id, arr){
+  return arr.indexOf(id) != -1
+}
+
+export function getMatch(concerts) {
+  return (dispatch, getState) => {
+    // getting the state data for a user's music preferences
+    let genreMatrix = getState().user.genreMatrix;
+    let genreCount = getState().user.genreCount;
+    let artists = getState().user.artists;
+    let lc = concerts.length - 1
+    let last = concerts[lc]['artists'][concerts[lc]['artists'].length -1]['id']
+    concerts.forEach(c => {
+      c['artists'].forEach(a => {
+        a['match'] = 0;
+        //iterate through all artists in a concert venue
+        spotifyApi.searchArtists(a['displayName']).then(val => {
+          if (val && val.artists.items.length > 0){
+              let currArtist = null;
+              let i = 0;
+              //make sure the artist returned by spotify actually matches the artist name
+              while (currArtist == null && i < val.artists.items.length) {
+                if(val.artists.items[i]['name'] == a['displayName']) {
+                  currArtist = val.artists.items[i]
+                }
+                i++
               }
-            }).catch(err => {
-              console.log(err)
-            })
-        }
+              if(currArtist) {
+                a['valid'] = true;
+                spotifyApi.getArtistTopTracks(currArtist['id'], 'from_token').then(result => {
+                  let tracks = result.tracks.slice(0,3)
+                  let ind = c['artists'].indexOf(a)
+                  c['artists'][ind]['tracks'] = tracks
+                }).catch(err => {
+                  console.log(err)
+                })
+                if(checkIfValExists(currArtist['id'], artists)) {
+                  //user has artist saved in their library
+                  a['match'] = 1
+                  if(a['id'] == last) {
+                    console.log('adding concerts')
+                    dispatch(addConcerts(concerts))
+                    dispatch(setLoading(false))
+                  }
+                } else {
+                  //checking if this artist's genre exists in user's library
+                  val.artists.items[0]['genres'].forEach(ag => {
+                    if(genreMatrix.hasOwnProperty(ag)){
+                      a['match'] += genreMatrix[ag] / genreCount
+                      console.log(a['match'])
+                      // a['match'] += 1
+                      //getting the related artists to compare
+                      spotifyApi.getArtistRelatedArtists(currArtist['id']).then(related => {
+                        related.artists.forEach(r => {
+                          checkIfValExists(r['id'], artists) && (
+                            a['match']+= .02
+                          )
+                        })
+                        if(a['id'] == last) {
+                          console.log('adding concerts')
+                          dispatch(addConcerts(concerts))
+                          dispatch(setLoading(false))
+                        }
+                  })
+                }
+              })
+              }
+            } else {
+              a['valid'] = false;
+              if(a['id'] == last) {
+                console.log('adding concerts')
+                dispatch(addConcerts(concerts))
+                dispatch(setLoading(false))
+              }
+            }
+          } else {
+            a['valid'] = false;
+            if(a['id'] == last) {
+              console.log('adding concerts')
+              dispatch(addConcerts(concerts))
+              dispatch(setLoading(false))
+            }
+          }
+        })
       })
     })
-  })
+  }
 }
-}
+
 
 export function addConcerts(concerts) {
   return {type: types.ADD_CONCERTS, concerts: concerts};

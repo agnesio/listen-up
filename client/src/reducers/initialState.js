@@ -1,8 +1,11 @@
 export default {
-  concerts: [],
+  concerts: {
+    concerts: []
+  },
   auth: {
     loggedIn : false,
-    token: ''
+    token: '',
+    loading: false
   },
   concertPaging: 1,
   userSongPaging: 1,
@@ -17,5 +20,4 @@ export default {
     submitting: false,
     betaOpen: false,
   },
-  loading: false,
 };

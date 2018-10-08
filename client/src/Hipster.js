@@ -22,25 +22,38 @@ import ParticleEffectButton from 'react-particle-effect-button'
 
 class Hipster extends Component {
 
-   //FOR PRODUCTION: Change IP Address from localhost:8888 to server endpoint (either areyouhipster.com:8888/login/ or aws?)
-
   render() {
     return (
       <div className="noParticle">
         {this.props.loggedIn ?
-          (this.props.hipster ?
+          (!this.props.loading ?
             <div>
-              <p>Placeholder</p>
+            {this.props.concerts.map(c =>
+              <div className="concerts">
+                <a href={c.url}><h2>{c.displayName}</h2></a>
+                <h3>{c.venue}</h3>
+                <h3>{c.start['date']} {c.start['time']}</h3>
+                <h4>{c.pop}</h4>
+                <table>
+                  {c.artists.map(a =>
+                    <tr>
+                      <td>{a.displayName}</td>
+                      <td>{a.match}</td>
+                    </tr>
+                  )}
+                </table>
+              </div>
+            )}
             </div>
             :
             <div className="loadingPage">
               <h1> {this.props.loadingMessage}...</h1>
             </div>
           )
-          :
+           :
           <div className="landing">
-            <h1> How Hipster Are You? </h1>
-            <h3> Let us analyze your Spotify library to find out  </h3>
+            <h1> Listen Up. Be Heard. Go Play. </h1>
+            <h3> Log in with Spotify to disover artists performing near you, for you </h3>
             <a href='http://ec2-34-230-1-236.compute-1.amazonaws.com:8000/login'><button className="goButton"> GO </button></a>
           </div>
         }
@@ -57,15 +70,16 @@ Hipster.propTypes = {
 function mapStateToProps(state) {
   return {
     loggedIn: state.auth.loggedIn,
-    concerts: state.concerts,
+    concerts: state.concerts.concerts,
     hipster: state.user.hipster,
     quote: getQuote(100-state.user.hipster),
     loadingMessage: state.user.loadingMessage,
+    loading: state.auth.loading,
     userMessage: getMessage(state.user.hipster),
     hide: state.user.submitted,
     email: state.user.email,
     betaOpen: state.user.betaOpen,
-    submitting: state.user.submitting
+    submitting: state.user.submitting,
   };
 }
 

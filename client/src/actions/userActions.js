@@ -25,8 +25,8 @@ export function getAnalytics(pop?, total?, offset?, artistsArray?) {
   } else {
       let hipster = (popularity / count).toFixed(2)
         dispatch(setHipster(hipster))
-        // dispatch(setArtists(artists))
-        // dispatch(getGenreMatrix(artists))
+        dispatch(setArtists(artists))
+        dispatch(getGenreMatrix(artists))
     }
   }).catch(err => {
     console.log(err)

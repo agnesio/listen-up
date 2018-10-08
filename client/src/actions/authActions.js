@@ -12,6 +12,10 @@ export function setLogOut() {
   return {type: types.LOGOUT};
 }
 
+export function setLoading(loading) {
+  console.log(loading)
+  return {type: types.SET_LOADING, status: loading}
+}
 
 export function login() {
     // let playerCheckInterval = null;
@@ -20,6 +24,7 @@ export function login() {
     if (token) {
       spotifyApi.setAccessToken(token);
       return dispatch => {
+        dispatch(setLoading(true))
         dispatch(setLoggedIn(token))
         dispatch(getAnalytics())
       }
