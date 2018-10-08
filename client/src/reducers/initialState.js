@@ -1,14 +1,13 @@
 export default {
   concerts: {
-    concerts: []
+    concerts: [],
+    page: 1
   },
   auth: {
     loggedIn : false,
     token: '',
     loading: false
   },
-  concertPaging: 1,
-  userSongPaging: 1,
   user: {
     artists: [],
     hipster: null,

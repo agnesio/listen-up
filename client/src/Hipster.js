@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as authActions from './actions/authActions';
 import * as userActions from './actions/userActions';
+import * as concertActions from './actions/concertActions';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -19,6 +20,8 @@ import {
 } from 'react-share';
 import Particles from 'react-particles-js';
 import ParticleEffectButton from 'react-particle-effect-button'
+import ConcertCard from './Concert.js'
+
 
 class Hipster extends Component {
 
@@ -28,22 +31,11 @@ class Hipster extends Component {
         {this.props.loggedIn ?
           (!this.props.loading ?
             <div>
+            <h1 className="primaryHeader"> Upcoming Concerts </h1>
             {this.props.concerts.map(c =>
-              <div className="concerts">
-                <a href={c.url}><h2>{c.displayName}</h2></a>
-                <h3>{c.venue}</h3>
-                <h3>{c.start['date']} {c.start['time']}</h3>
-                <h4>{c.pop}</h4>
-                <table>
-                  {c.artists.map(a =>
-                    <tr>
-                      <td>{a.displayName}</td>
-                      <td>{a.match}</td>
-                    </tr>
-                  )}
-                </table>
-              </div>
+              <ConcertCard concert={c} />
             )}
+            <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Load More </button>
             </div>
             :
             <div className="loadingPage">
@@ -64,7 +56,8 @@ class Hipster extends Component {
 
 Hipster.propTypes = {
   authActions: PropTypes.object,
-  userActions: PropTypes.object
+  userActions: PropTypes.object,
+  concertActions: PropTypes.object
 };
 
 function mapStateToProps(state) {
@@ -80,6 +73,7 @@ function mapStateToProps(state) {
     email: state.user.email,
     betaOpen: state.user.betaOpen,
     submitting: state.user.submitting,
+    page: state.concerts.page
   };
 }
 
@@ -102,7 +96,8 @@ function getMessage(percent){
 function mapDispatchToProps(dispatch) {
   return {
     authActions: bindActionCreators(authActions, dispatch),
-    userActions: bindActionCreators(userActions, dispatch)
+    userActions: bindActionCreators(userActions, dispatch),
+    concertActions: bindActionCreators(concertActions, dispatch)
   };
 }
 export default connect(

@@ -6,24 +6,38 @@ const kick = new Songkick('C8TJ7xmSqeYneurG');
 const spotifyApi = new SpotifyWebApi();
 
 
-export function getConcerts() {
+export function getConcerts(page) {
   return dispatch => {
-    kick.searchLocations({'query': 'Washington, DC'}).then(resp => {
-      let id = resp[0]['metroArea']['id']
-      kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : 1}).then(events => {
-        console.log(events)
-        dispatch(formatConcerts(events))
+    let savedConcerts = localStorage.getItem('concertsRaw')
+    if(page == 1 && savedConcerts){
+      dispatch(formatConcerts(JSON.parse(savedConcerts)))
+      dispatch(increasePage(page+1))
+    } else  {
+      kick.searchLocations({'query': 'Washington, DC'}).then(resp => {
+        let id = resp[0]['metroArea']['id']
+        kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : page}).then(events => {
+          if(page == 1) {
+            localStorage.setItem('concertsRaw', JSON.stringify(events))
+          }
+          dispatch(formatConcerts(events))
+          dispatch(increasePage(page+1))
+        })
+      }).catch(err => {
+        console.log(err)
       })
-    }).catch(err => {
-      console.log(err)
-    })
+    }
   };
 }
 
+export function increasePage(page) {
+  return {type: types.UP_PAGE, page: page};
+}
+
 export function formatConcerts(events) {
+  console.log(events)
   let concerts = []
   events.forEach(e => {
-    if(e.displayName.indexOf('PRIVATE') == -1 && e.displayName.indexOf('CANCELLED') == -1 && e.popularity < 0.01){
+    if(e.displayName.indexOf('PRIVATE') == -1 && e.displayName.indexOf('CANCELLED') == -1 && e.popularity < 0.05){
       let artists = e.performance.map(e => e.artist)
       concerts.push({
         'displayName' : e.displayName,
@@ -33,7 +47,6 @@ export function formatConcerts(events) {
         'pop' : e.popularity,
         'url' : e.uri
       })
-      console.log(concerts)
     }
   })
   return dispatch => {
@@ -46,6 +59,7 @@ function checkIfValExists(id, arr){
 }
 
 export function getMatch(concerts) {
+  console.log(concerts)
   return (dispatch, getState) => {
     // getting the state data for a user's music preferences
     let genreMatrix = getState().user.genreMatrix;
@@ -70,6 +84,10 @@ export function getMatch(concerts) {
               }
               if(currArtist) {
                 a['valid'] = true;
+                console.log(currArtist)
+                if(currArtist['images'].length > 0){
+                  a['image'] = currArtist['images'][0]['url']
+                }
                 spotifyApi.getArtistTopTracks(currArtist['id'], 'from_token').then(result => {
                   let tracks = result.tracks.slice(0,3)
                   let ind = c['artists'].indexOf(a)
@@ -90,7 +108,6 @@ export function getMatch(concerts) {
                   val.artists.items[0]['genres'].forEach(ag => {
                     if(genreMatrix.hasOwnProperty(ag)){
                       a['match'] += genreMatrix[ag] / genreCount
-                      console.log(a['match'])
                       // a['match'] += 1
                       //getting the related artists to compare
                       spotifyApi.getArtistRelatedArtists(currArtist['id']).then(related => {

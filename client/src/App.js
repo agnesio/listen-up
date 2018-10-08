@@ -8,16 +8,6 @@ import * as authActions from './actions/authActions';
 import * as userActions from './actions/userActions';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  RedditShareButton,
-  EmailShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  RedditIcon,
-  EmailIcon
-} from 'react-share';
 import Particles from 'react-particles-js';
 import ParticleEffectButton from 'react-particle-effect-button'
 
@@ -34,19 +24,20 @@ class App extends Component {
     return (
       <div className="App">
         <Hipster />
-        <Particles
-        style={{
-            'position': 'absolute',
-            'width': '100vw',
-            'height': '100vh',
-            'z-index': -1,
-            'background' : 'rgb(38, 33, 50)'
-          }}
-        />
       </div>
     );
   }
 }
+
+// <Particles
+// style={{
+//     'position': 'absolute',
+//     'width': '100vw',
+//     'height': '100vh',
+//     'z-index': -1,
+//     'background' : 'rgb(38, 33, 50)'
+//   }}
+// />
 
 App.propTypes = {
   authActions: PropTypes.object,
