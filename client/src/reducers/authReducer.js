@@ -19,6 +19,10 @@ export default function login(state={loggedIn: false, token: '', loading: false}
       return Object.assign({}, state, {
         loading: action.status
       })
+    case types.SET_DEVICE:
+      return Object.assign({}, state, {
+        device: action.device
+      })
     default:
       return state
   }

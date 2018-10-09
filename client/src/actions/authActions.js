@@ -13,7 +13,6 @@ export function setLogOut() {
 }
 
 export function setLoading(loading) {
-  console.log(loading)
   return {type: types.SET_LOADING, status: loading}
 }
 
@@ -28,13 +27,15 @@ export function login() {
         dispatch(setLoggedIn(token))
         dispatch(getAnalytics())
       }
-      // this.playerCheckInterval = setInterval(() => this.checkForPlayer(token), 1000);
-      // this.checkForPlayer(token)
     } else {
       return dispatch => {
         dispatch(setLogOut())
       }
     }
+}
+
+export function setDevice(deviceId) {
+  return {type: types.SET_DEVICE, device: deviceId}
 }
 
 // getting the parameters sent from oAuth in server
@@ -49,38 +50,3 @@ function getHashParams() {
   }
   return hashParams;
 }
-
-
-//
-// checkForPlayer(token) {
-//   if (window.Spotify) {
-//     clearInterval(this.playerCheckInterval);
-//     this.player = new window.Spotify.Player({
-//       name: "Agnes Spotify Player",
-//       getOAuthToken: cb => { cb(token); },
-//     });
-//     this.createEventHandlers();
-//
-//     // finally, connect!
-//     this.player.connect();
-//   }
-// }
-//
-// createEventHandlers() {
-//   this.player.on('initialization_error', e => { console.error(e); });
-//   this.player.on('authentication_error', e => {
-//     console.error(e);
-//   });
-//   this.player.on('account_error', e => { console.error(e); });
-//   this.player.on('playback_error', e => { console.error(e); });
-//
-//   // Playback status updates
-//   this.player.on('player_state_changed', state => this.onStateChanged(state));
-//
-//   // Ready
-//   this.player.on('ready', async data => {
-//     let { device_id } = data;
-//     await this.setState({ deviceId: device_id });
-//     this.transferPlaybackHere();
-//   });
-// }

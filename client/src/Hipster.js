@@ -21,9 +21,104 @@ import {
 import Particles from 'react-particles-js';
 import ParticleEffectButton from 'react-particle-effect-button'
 import ConcertCard from './Concert.js'
+import SpotifyWebApi from 'spotify-web-api-js';
+const spotifyApi = new SpotifyWebApi();
+
 
 
 class Hipster extends Component {
+
+  componentWillMount() {
+    this.playerCheckInterval = setInterval(() => this.checkForPlayer(this.props.token), 1000);
+    this.checkForPlayer(this.props.token)
+  }
+
+  checkForPlayer(token) {
+    if (window.Spotify) {
+      clearInterval(this.playerCheckInterval);
+      this.player = new window.Spotify.Player({
+        name: "Agnes Spotify Player",
+        getOAuthToken: cb => { cb(token); },
+      });
+      this.createEventHandlers();
+
+      // finally, connect!
+      this.player.connect();
+    }
+  }
+
+  createEventHandlers() {
+    this.player.on('initialization_error', e => { console.error(e); });
+    this.player.on('authentication_error', e => {
+      console.error(e);
+    });
+    this.player.on('account_error', e => { console.error(e); });
+    this.player.on('playback_error', e => { console.error(e); });
+
+    // Playback status updates
+    this.player.on('player_state_changed', state => this.onStateChanged(state));
+
+    // Ready
+    this.player.on('ready', async data => {
+      console.log('setting')
+      console.log(data)
+      let { device_id } = data;
+      await this.props.authActions.setDevice(device_id);
+      this.transferPlaybackHere();
+    });
+  }
+
+  onStateChanged(state) {
+    // if we're no longer listening to music, we'll get a null state.
+    if (state !== null) {
+      const {
+        current_track: currentTrack,
+        position,
+        duration,
+      } = state.track_window;
+      const trackName = currentTrack.name;
+      const albumName = currentTrack.album.name;
+      const artistName = currentTrack.artists
+        .map(artist => artist.name)
+        .join(", ");
+      const playing = !state.paused;
+      this.setState({
+        position,
+        duration,
+        trackName,
+        albumName,
+        artistName,
+        playing
+      });
+    }
+  }
+
+  // onPrevClick() {
+  //   this.player.previousTrack();
+  // }
+  //
+  // onPlayClick() {
+  //   this.player.togglePlay();
+  // }
+  //
+  // onNextClick() {
+  //   this.player.nextTrack();
+  // }
+
+  playSong(song) {
+    let data = {'device_id' : [this.props.deviceId], 'uris' : [song]}
+    spotifyApi.play(data).then(resp => {
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  transferPlaybackHere() {
+    console.log('transferring playback')
+    spotifyApi.transferMyPlayback([this.props.deviceId]).then(val => {
+      console.log(val)
+    })
+  }
 
   render() {
     return (
@@ -64,34 +159,18 @@ function mapStateToProps(state) {
   return {
     loggedIn: state.auth.loggedIn,
     concerts: state.concerts.concerts,
-    hipster: state.user.hipster,
-    quote: getQuote(100-state.user.hipster),
     loadingMessage: state.user.loadingMessage,
     loading: state.auth.loading,
-    userMessage: getMessage(state.user.hipster),
     hide: state.user.submitted,
     email: state.user.email,
     betaOpen: state.user.betaOpen,
     submitting: state.user.submitting,
-    page: state.concerts.page
+    page: state.concerts.page,
+    token: state.auth.token,
+    deviceId: state.auth.device
   };
 }
 
-function getQuote(percent) {
-  let quote = "I got "+percent+"% hipster! How hipster are you?"
-  return quote;
-}
-
-function getMessage(percent){
-  let p = percent > 80 ? 'Absolutely not hipster' :
-          percent > 65 ? "Eh you're not totally mainstream" :
-            percent > 50 ? "You know some hidden tracks" :
-              percent > 40 ? "People go to you for music" :
-                percent > 30 ? "You even know the underground scene" :
-                  percent > 20 ? "Do people ever know what you're listening to?" :
-                  "Certified hipster"
-  return p
-}
 
 function mapDispatchToProps(dispatch) {
   return {

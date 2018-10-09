@@ -1,9 +1,9 @@
 .App {
-  color: white;
+  color: rgb(38, 33, 50);
   height: 100vh;
   width: 100vw;
   margin: 0 !important;
-  background-color: rgb(38, 33, 50);
+  background-color: white;
   position: relative;
 }
 
@@ -55,7 +55,7 @@ a {
   height: 10vh;
   width: 12vw;
   background-color: white;
-  color: rgb(38, 33, 50);
+  color: white;
   border-radius: 10vw;
   border: none;
   font-size: 3vw;
@@ -67,7 +67,7 @@ a {
   height: 7vh;
   width: 20vw;
   background-color: white;
-  color: rgb(38, 33, 50);
+  color: white;
   border-radius: 10vw;
   border: none;
   font-size: 3vw;
@@ -136,8 +136,8 @@ input {
 .submitButton{
   font-family: 'Raleway', sans-serif;
   margin-top: 3vh;
-  background-color: white;
-  color: rgb(38, 33, 50);
+  background-color: rgb(38, 33, 50);
+  color: white);
   border-radius: 10vw;
   border: none;
   font-size: 3vw;
@@ -270,27 +270,40 @@ input {
   font-size: 50px
 }
 
-.concerts {
+.concert {
   text-align: center;
 }
 
+
+
+.concertTitleContainer {
+  background-size: cover !important;
+  border-radius: 10px;
+  margin: 10px 20px 10px 20px;
+}
+
+
 .concertTitle {
   font-weight: 400;
-  color: rgb(38, 33, 50);
+  padding: 70px 50px;
+  color: white;
 }
 
-.concertHeader {
-  height: auto;
-  background-color: white;
-  margin: 10px 10px 10px 10px;
-  border-radius: 10px;
-  padding: 5px 5px;
+.artist {
+  display: flex;
 }
 
-.artistHeader {
-  height: 300px;
-  margin: 10px 20px 10px 20px;
-  padding: 5px 5px;
-  background: no-repeat center;
-  background-size: cover;
+.artistImage {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+}
+
+.artistName {
+  display: inline-block;
+  padding-left: 20px;
+}
+
+.artistTable {
+  margin: 10px 60px 10px 60px;
 }

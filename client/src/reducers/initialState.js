@@ -3,6 +3,7 @@ export default {
     concerts: [],
     page: 1
   },
+  player: {},
   auth: {
     loggedIn : false,
     token: '',

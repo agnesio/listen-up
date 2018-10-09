@@ -15,6 +15,7 @@
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.5",
     "react-share": "^2.3.1",
+    "react-spotify-player": "^1.0.4",
     "react-thunk": "^1.0.0",
     "recharts": "^1.2.0",
     "redux": "^4.0.0",
