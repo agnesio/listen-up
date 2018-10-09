@@ -11,10 +11,6 @@ export default function concerts(state = initialState.concerts, action) {
       return Object.assign({}, state, {
         page: action.page
       })
-    case types.NOW_PLAYING:
-      return Object.assign({}, state, {
-        song: action.song
-      })
     default:
       return state;
   }

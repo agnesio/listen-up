@@ -20,11 +20,11 @@ class Artist extends Component {
         <tr>
           <th valign="middle">  <img className="artistImage" src={this.props.a.image} /> </th>
           <th valign="middle">  <h2 className="artistName">{this.props.a.displayName}</h2> </th>
-          <th>{this.props.a.match}</th>
+          <th valign="middle" className="match">{(this.props.a.match * 100).toFixed(2)}% Match</th>
         </tr>
           {this.props.a.tracks.map( t =>
-            <tr>
-              <td><button onClick={() => this.props.concertActions.playSong(this.props.deviceId, t.uri)}> Play</button></td>
+            <tr className="songs">
+              <td className="buttonContainer"><button className="playButton" onClick={() => this.props.concertActions.playSong(this.props.deviceId, t.uri, this.props.nowPlaying, this.props.playing)}> {this.props.playing && this.props.nowPlaying == t.uri ? 'Pause' : 'Play'}</button></td>
               <td>{t.name}</td>
             </tr>
           )}
@@ -37,9 +37,10 @@ class Artist extends Component {
 
 function mapStateToProps(state) {
   return {
-    song: state.concerts.song,
     token: state.auth.token,
-    deviceId: state.auth.device
+    deviceId: state.auth.device,
+    nowPlaying: state.player.song,
+    playing: state.player.playing
   };
 }
 

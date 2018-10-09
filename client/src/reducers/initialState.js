@@ -3,7 +3,10 @@ export default {
     concerts: [],
     page: 1
   },
-  player: {},
+  player: {
+    nowPlaying: '',
+    playing: false
+  },
   auth: {
     loggedIn : false,
     token: '',

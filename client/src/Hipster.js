@@ -93,26 +93,6 @@ class Hipster extends Component {
     }
   }
 
-  // onPrevClick() {
-  //   this.player.previousTrack();
-  // }
-  //
-  // onPlayClick() {
-  //   this.player.togglePlay();
-  // }
-  //
-  // onNextClick() {
-  //   this.player.nextTrack();
-  // }
-
-  playSong(song) {
-    let data = {'device_id' : [this.props.deviceId], 'uris' : [song]}
-    spotifyApi.play(data).then(resp => {
-    }).catch(err => {
-      console.log(err)
-    })
-  }
-
   transferPlaybackHere() {
     console.log('transferring playback')
     spotifyApi.transferMyPlayback([this.props.deviceId]).then(val => {

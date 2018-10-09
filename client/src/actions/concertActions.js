@@ -114,9 +114,6 @@ function checkIfValExists(id, arr){
 }
 
 export function getMatch(concerts, last) {
-  console.log('getting match')
-  console.log(concerts)
-  console.log(last)
   return (dispatch, getState) => {
     let genreMatrix = getState().user.genreMatrix;
     let genreCount = getState().user.genreCount;
@@ -175,21 +172,38 @@ export function getMatch(concerts, last) {
 }
 
 
-export function playSong(deviceId, song) {
+export function playSong(deviceId, song, curr, playing) {
+    return dispatch => {
+    if(curr == song) {
+      if(playing) {
+        let data = {'device_id' : deviceId, 'uris' : [song]}
+        spotifyApi.pause().then(resp => {
+        }).catch(err => {
+          console.log(err)
+        })
+        dispatch({type: types.PAUSE_SONG})
+      } else {
+        dispatch({type: types.PLAY_SONG})
+        spotifyApi.play().then(resp => {
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+    } else {
+      let data = {'device_id' : deviceId, 'uris' : [song]}
+      spotifyApi.play(data).then(resp => {
+      }).catch(err => {
+        console.log(err)
+      })
+        dispatch({type: types.NOW_PLAYING, song: song})
+        dispatch({type: types.PLAY_SONG})
+      }
+    }
 
-  let data = {'device_id' : deviceId, 'uris' : [song]}
-  spotifyApi.play(data).then(resp => {
-  }).catch(err => {
-    console.log(err)
-  })
-  return dispatch => {
-    dispatch({type: types.NOW_PLAYING, song: song})
-  }
 }
 
 
 export function addConcerts(concerts) {
-  console.log('adding concerts')
   return dispatch => {
     dispatch({type: types.ADD_CONCERTS, concerts: concerts});
     dispatch(setLoading(false))
