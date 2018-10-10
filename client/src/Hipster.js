@@ -69,28 +69,29 @@ class Hipster extends Component {
   }
 
   onStateChanged(state) {
-    // if we're no longer listening to music, we'll get a null state.
-    if (state !== null) {
-      const {
-        current_track: currentTrack,
-        position,
-        duration,
-      } = state.track_window;
-      const trackName = currentTrack.name;
-      const albumName = currentTrack.album.name;
-      const artistName = currentTrack.artists
-        .map(artist => artist.name)
-        .join(", ");
-      const playing = !state.paused;
-      this.setState({
-        position,
-        duration,
-        trackName,
-        albumName,
-        artistName,
-        playing
-      });
-    }
+    console.log(state)
+  //   // if we're no longer listening to music, we'll get a null state.
+  //   if (state !== null) {
+  //     const {
+  //       current_track: currentTrack,
+  //       position,
+  //       duration,
+  //     } = state.track_window;
+  //     const trackName = currentTrack.name;
+  //     const albumName = currentTrack.album.name;
+  //     const artistName = currentTrack.artists
+  //       .map(artist => artist.name)
+  //       .join(", ");
+  //     const playing = !state.paused;
+  //     this.setState({
+  //       position,
+  //       duration,
+  //       trackName,
+  //       albumName,
+  //       artistName,
+  //       playing
+  //     });
+  //   }
   }
 
   transferPlaybackHere() {
@@ -110,7 +111,9 @@ class Hipster extends Component {
             {this.props.concerts.map(c =>
               <ConcertCard concert={c} />
             )}
-            <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Load More </button>
+            <div className="loadButtonWrapper">
+              <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Load More </button>
+            </div>
             </div>
             :
             <div className="loadingPage">

@@ -63,6 +63,7 @@ function getTracks(concerts) {
     let lc = concerts.length - 1
     let last = concerts[lc]['artists'][concerts[lc]['artists'].length -1]['id']
     concerts.forEach(c => {
+      c['valid'] = false;
       c['artists'].forEach(a => {
         a['tracks'] = []
         //iterate through all artists in a concert venue
@@ -79,6 +80,7 @@ function getTracks(concerts) {
               }
               if(currArtist) {
                 a['valid'] = true;
+                c['valid']=true;
                 a['spotifyId'] = currArtist['id']
                 a['genres'] = currArtist['genres']
                 if(currArtist['images'].length > 0){

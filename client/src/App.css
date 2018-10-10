@@ -55,9 +55,9 @@ a {
   height: 10vh;
   width: 12vw;
   background-color: white;
-  color: white;
+  color: rgb(38, 33, 50);
   border-radius: 10vw;
-  border: none;
+  border: 1px solid rgb(38, 33, 50);
   font-size: 3vw;
 }
 
@@ -67,10 +67,17 @@ a {
   height: 7vh;
   width: 20vw;
   background-color: white;
-  color: white;
+  color: rgb(38, 33, 50);
   border-radius: 10vw;
-  border: none;
+  border: 1px solid rgb(38, 33, 50);
   font-size: 3vw;
+  text-align: center;
+}
+
+.loadButtonWrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hipsterPage {
@@ -272,6 +279,10 @@ input {
 
 .concert {
   text-align: center;
+  border: 1px solid #EEE;
+  margin: 10px 20px 10px 20px;
+  padding: 0 !important;
+  border-radius: 10px;
 }
 
 
@@ -279,7 +290,6 @@ input {
 .concertTitleContainer {
   background-size: cover !important;
   border-radius: 10px;
-  margin: 10px 20px 10px 20px;
 }
 
 
@@ -287,10 +297,12 @@ input {
   font-weight: 400;
   padding: 70px 50px;
   color: white;
+  margin: 0;
 }
 
+
 .artist {
-  display: flex;
+  padding: 10px 60px 10px 60px;
 }
 
 .artistImage {
@@ -303,12 +315,11 @@ input {
 .artistName {
   display: inline-block;
   padding-left: 20px;
-    text-align: center;
+  text-align: center;
 }
 
 .artistTable {
-  margin: 10px 60px 10px 60px;
-  width: 100vw;
+  width: 80vw;
   text-align: left;
 }
 
@@ -317,15 +328,20 @@ input {
   margin-bottom: 20px;
 }
 
-.songs{
-  text-align: center;
+.songList{
+  padding-left:20px;
 }
 
 .playButton{
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   color: white;
-  background-color: rgb(38, 33, 50);
+  background-color: black;
   border: none;
   border-radius: 50px;
+}
+
+.trackName{
+  text-align: left;
+  padding-left: 20px;
 }

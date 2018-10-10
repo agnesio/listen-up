@@ -18,8 +18,6 @@ class App extends Component {
      this.props.authActions.login();
    }
 
-   //FOR PRODUCTION: Change IP Address from localhost:8888 to prod server
-
   render() {
     return (
       <div className="App">
@@ -29,15 +27,15 @@ class App extends Component {
   }
 }
 
-// <Particles
-// style={{
-//     'position': 'absolute',
-//     'width': '100vw',
-//     'height': '100vh',
-//     'z-index': -1,
-//     'background' : 'rgb(38, 33, 50)'
-//   }}
-// />
+<Particles
+style={{
+    'position': 'absolute',
+    'width': '100vw',
+    'height': '100vh',
+    'background' : 'white',
+    'color' : 'red'
+  }}
+/>
 
 App.propTypes = {
   authActions: PropTypes.object,
@@ -47,22 +45,6 @@ function mapStateToProps(state) {
   return {
     loggedIn: state.auth.loggedIn,
   };
-}
-
-function getQuote(percent) {
-  let quote = "I got "+percent+"% hipster! How hipster are you?"
-  return quote;
-}
-
-function getMessage(percent){
-  let p = percent > 80 ? 'Absolutely not hipster' :
-          percent > 65 ? "Eh you're not totally mainstream" :
-            percent > 50 ? "You know some hidden tracks" :
-              percent > 40 ? "People go to you for music" :
-                percent > 30 ? "You even know the underground scene" :
-                  percent > 20 ? "Do people ever know what you're listening to?" :
-                  "Certified hipster"
-  return p
 }
 
 function mapDispatchToProps(dispatch) {
