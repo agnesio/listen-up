@@ -120,6 +120,9 @@ export function getMatch(concerts, last) {
     let genreMatrix = getState().user.genreMatrix;
     let genreCount = getState().user.genreCount;
     let artists = getState().user.artists;
+    let recentArtists = getState().user.recentArtists;
+    let recentGenres = getState().user.recentGenres;
+    let rGenreCount = getState().user.recentGenreCount;
     concerts.forEach(c => {
       c['artists'].forEach(a => {
         a['match'] = 0
@@ -130,17 +133,27 @@ export function getMatch(concerts, last) {
             if(a['id'] == last) {
               dispatch(addConcerts(concerts))
             }
+          } else if (checkIfValExists(a['spotifyId'], recentArtists)) {
+            //user recently listened to this artist
+            a['match'] = 1
+            if(a['id'] == last) {
+              dispatch(addConcerts(concerts))
+            }
           } else {
               if(a['genres'].length > 0) {
                 //checking if this artist's genre exists in user's library
                 a['genres'].forEach(ag => {
-                  if(genreMatrix.hasOwnProperty(ag)){
-                    a['match'] += genreMatrix[ag] / genreCount
+                  if(genreMatrix.hasOwnProperty(ag) || recentGenres.hasOwnProperty(ag)){
+                    genreMatrix.hasOwnProperty(ag) && (a['match'] += genreMatrix[ag] / genreCount)
+                    recentGenres.hasOwnProperty(ag) && (a['match'] += recentGenres[ag] / rGenreCount)
                     //getting the related artists to compare
                     spotifyApi.getArtistRelatedArtists(a['spotifyId']).then(related => {
                       related.artists.forEach(r => {
                         checkIfValExists(r['id'], artists) && (
                           a['match']+= .02
+                        )
+                        checkIfValExists(r['id'], recentArtists) && (
+                          a['match'] += .05
                         )
                         if(a['id'] == last && a['genres'].indexOf(ag) == a['genres'].length - 1) {
                           console.log('adding concerts')

@@ -109,7 +109,7 @@ export function processGenres(genres, type){
         localStorage.setItem('genres', JSON.stringify(genreMatrix))
         localStorage.setItem('genreCount', JSON.stringify(genres.length))
         dispatch(setGenres(genreMatrix, genres.length, type))
-        dispatch(getConcerts(1))
+        type == 'all' && (dispatch(getConcerts(1)))
   }
 }
 
