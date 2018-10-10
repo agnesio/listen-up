@@ -12,6 +12,15 @@ export default function hipsterRating(state=initialState.user, action) {
       return Object.assign({}, state, {
         artists: action.artists
       })
+    case types.RECENT_ARTISTS:
+      return Object.assign({}, state, {
+        recentArtists: action.recentArtists
+      })
+    case types.RECENT_GENRES:
+      return Object.assign({}, state, {
+        recentGenres: action.genreMatrix,
+        recentGenreCount: action.genreCount
+      })
     case types.SET_GENRES:
       return Object.assign({}, state, {
         genreMatrix: action.genreMatrix,

@@ -22,5 +22,7 @@ export default {
     submitted: false,
     submitting: false,
     betaOpen: false,
+    recentArtists: [],
+    recentGenres: []
   },
 };
