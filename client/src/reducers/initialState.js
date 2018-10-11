@@ -25,4 +25,10 @@ export default {
     recentArtists: [],
     recentGenres: []
   },
+  location: {
+    name: '',
+    search: '',
+    id: '',
+    coords: [38.9127254, -77.0148525]
+  }
 };

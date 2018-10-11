@@ -108,6 +108,7 @@ class Hipster extends Component {
           (!this.props.loading ?
             <div>
             <h1 className="primaryHeader"> Upcoming Concerts </h1>
+            <h2 className="locationHeader"> Displaying concerts in {this.props.locName}</h2>
             {this.props.concerts.map(c =>
               <ConcertCard concert={c} />
             )}
@@ -150,7 +151,8 @@ function mapStateToProps(state) {
     submitting: state.user.submitting,
     page: state.concerts.page,
     token: state.auth.token,
-    deviceId: state.auth.device
+    deviceId: state.auth.device,
+    locName: state.location.name,
   };
 }
 

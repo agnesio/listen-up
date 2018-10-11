@@ -7,6 +7,7 @@ import {bindActionCreators} from 'redux';
 import * as authActions from './actions/authActions';
 import * as userActions from './actions/userActions';
 import PropTypes from 'prop-types';
+import { GeoLocation } from 'react-redux-geolocation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Particles from 'react-particles-js';
 import ParticleEffectButton from 'react-particle-effect-button'
@@ -27,15 +28,15 @@ class App extends Component {
   }
 }
 
-<Particles
-style={{
-    'position': 'absolute',
-    'width': '100vw',
-    'height': '100vh',
-    'background' : 'white',
-    'color' : 'red'
-  }}
-/>
+// <Particles
+// style={{
+//     'position': 'absolute',
+//     'width': '100vw',
+//     'height': '100vh',
+//     'background' : 'white',
+//     'color' : 'red'
+//   }}
+// />
 
 App.propTypes = {
   authActions: PropTypes.object,
@@ -53,7 +54,9 @@ function mapDispatchToProps(dispatch) {
     userActions: bindActionCreators(userActions, dispatch)
   };
 }
+
+
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
-)(App);
+  mapDispatchToProps,
+) (App);

@@ -23,6 +23,12 @@ export function login() {
     if (token) {
       spotifyApi.setAccessToken(token);
       return dispatch => {
+        const geolocation = navigator.geolocation;
+        geolocation.getCurrentPosition((position) => {
+            if(position.coords) {
+              dispatch(setLocCoords(position.coords))
+            }
+          })
         dispatch(setLoading(true))
         dispatch(setLoggedIn(token))
         dispatch(getAnalytics())
@@ -36,6 +42,12 @@ export function login() {
 
 export function setDevice(deviceId) {
   return {type: types.SET_DEVICE, device: deviceId}
+}
+
+export function setLocCoords(coords) {
+  let c = [coords.latitude, coords.longitude]
+  console.log(c)
+  return {type: types.SET_CURR_COORDS, coords: c}
 }
 
 // getting the parameters sent from oAuth in server

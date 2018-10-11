@@ -6,27 +6,32 @@ const kick = new Songkick('C8TJ7xmSqeYneurG');
 const spotifyApi = new SpotifyWebApi();
 
 
-export function getConcerts(page) {
-  return dispatch => {
-    // let savedConcerts = localStorage.getItem('concertsRaw')
-    // if(page == 1 && savedConcerts){
-    //   dispatch(formatConcerts(JSON.parse(savedConcerts)))
-    //   dispatch(increasePage(page+1))
-    // } else  {
-      kick.searchLocations({'query': 'Washington, DC'}).then(resp => {
+export function getConcerts(page, loc?) {
+  return (dispatch, getState) => {
+      let data = {}
+      if(loc) {
+        data = {'query' : loc}
+      } else {
+        let coords = getState().location.coords
+        data = {'location' : 'geo:'+coords[0]+','+coords[1]}
+      }
+      kick.searchLocations(data).then(resp => {
+        console.log(resp)
+        let name = resp[0]['metroArea']['displayName'] + ', ' + resp[0]['metroArea']['state']['displayName']
         let id = resp[0]['metroArea']['id']
+        dispatch(setLocation(name, id))
         kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : page}).then(events => {
-          if(page == 1) {
-            localStorage.setItem('concertsRaw', JSON.stringify(events))
-          }
           dispatch(formatConcerts(events))
           dispatch(increasePage(page+1))
         })
       }).catch(err => {
         console.log(err)
       })
-    // }
   };
+}
+
+export function setLocation(name, id){
+  return {type: types.SET_LOCATION, name: name, id: id}
 }
 
 export function increasePage(page) {
