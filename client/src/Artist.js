@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import concertPic from './images/default.jpeg';
 import './App.css';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -21,7 +21,7 @@ class Artist extends Component {
       <div className="artist">
         <table className="artistTable">
         <tr>
-          <th valign="middle">  <img className="artistImage" src={this.props.a.image} /> </th>
+          <th valign="middle">  <img className="artistImage" src={this.props.a.image ? this.props.a.image : concertPic} /> </th>
           <th valign="middle">  <h2 className="artistName">{this.props.a.displayName}</h2> </th>
           <th valign="middle" className="match">{(this.props.a.match * 100).toFixed(2)}% Match</th>
         </tr>

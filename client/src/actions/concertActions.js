@@ -7,17 +7,15 @@ const spotifyApi = new SpotifyWebApi();
 
 
 export function getConcerts(page) {
-  console.log('gettingConcerts')
-  console.log(page)
   return dispatch => {
-    let savedConcerts = localStorage.getItem('concertsRaw')
+    // let savedConcerts = localStorage.getItem('concertsRaw')
     // if(page == 1 && savedConcerts){
     //   dispatch(formatConcerts(JSON.parse(savedConcerts)))
     //   dispatch(increasePage(page+1))
     // } else  {
       kick.searchLocations({'query': 'Washington, DC'}).then(resp => {
         let id = resp[0]['metroArea']['id']
-        kick.getMetroAreaCalendar(id, {'per_page' : 10, 'page' : page}).then(events => {
+        kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : page}).then(events => {
           if(page == 1) {
             localStorage.setItem('concertsRaw', JSON.stringify(events))
           }
@@ -57,7 +55,6 @@ export function formatConcerts(events) {
 }
 
 function getTracks(concerts) {
-  console.log('getting tracks')
   return (dispatch) => {
     //to move to the next funciton after the foreach functions are complete
     let lc = concerts.length - 1
@@ -88,6 +85,7 @@ function getTracks(concerts) {
                 }
                 spotifyApi.getArtistTopTracks(a['spotifyId'], 'from_token').then(result => {
                   let tracks = result.tracks.slice(0,3)
+                  console.log(tracks)
                   a['tracks'] = tracks
                   if(a['id'] == last) {
                     dispatch(getMatch(concerts, last))
@@ -116,6 +114,7 @@ function checkIfValExists(id, arr){
 }
 
 export function getMatch(concerts, last) {
+  console.log('getting match')
   return (dispatch, getState) => {
     let genreMatrix = getState().user.genreMatrix;
     let genreCount = getState().user.genreCount;
@@ -131,12 +130,14 @@ export function getMatch(concerts, last) {
             //user has artist saved in their library
             a['match'] = 1
             if(a['id'] == last) {
+              console.log('adding concerts artists')
               dispatch(addConcerts(concerts))
             }
           } else if (checkIfValExists(a['spotifyId'], recentArtists)) {
             //user recently listened to this artist
             a['match'] = 1
             if(a['id'] == last) {
+              console.log('adding concerts recent')
               dispatch(addConcerts(concerts))
             }
           } else {
@@ -146,6 +147,7 @@ export function getMatch(concerts, last) {
                   if(genreMatrix.hasOwnProperty(ag) || recentGenres.hasOwnProperty(ag)){
                     genreMatrix.hasOwnProperty(ag) && (a['match'] += genreMatrix[ag] / genreCount)
                     recentGenres.hasOwnProperty(ag) && (a['match'] += recentGenres[ag] / rGenreCount)
+                    }
                     //getting the related artists to compare
                     spotifyApi.getArtistRelatedArtists(a['spotifyId']).then(related => {
                       related.artists.forEach(r => {
@@ -155,18 +157,18 @@ export function getMatch(concerts, last) {
                         checkIfValExists(r['id'], recentArtists) && (
                           a['match'] += .05
                         )
-                        if(a['id'] == last && a['genres'].indexOf(ag) == a['genres'].length - 1) {
-                          console.log('adding concerts')
+                        if(a['id'] == last && a['genres'].indexOf(ag) == a['genres'].length - 1 && related.artists.indexOf(r) == 19) {
+                          console.log('adding concerts nested genre')
                           dispatch(addConcerts(concerts))
                         }
                       })
                     })
-                  } else {
-                    if(a['id'] == last && a['genres'].indexOf(ag) == a['genres'].length - 1) {
-                      console.log('adding concerts')
-                      dispatch(addConcerts(concerts))
-                    }
-                  }
+                  // } else {
+                  //   if(a['id'] == last && a['genres'].indexOf(ag) == a['genres'].length - 1) {
+                  //     console.log('adding concerts')
+                  //     dispatch(addConcerts(concerts))
+                  //   }
+                  // }
                 })
               } else {
                 if(a['id'] == last) {
@@ -219,6 +221,7 @@ export function playSong(deviceId, song, curr, playing) {
 
 
 export function addConcerts(concerts) {
+  console.log('adding concerts secondary')
   return dispatch => {
     dispatch({type: types.ADD_CONCERTS, concerts: concerts});
     dispatch(setLoading(false))
