@@ -10,19 +10,15 @@ import PropTypes from 'prop-types';
 import Artist from './Artist'
 
 const ConcertCard = ({concert}) => (
-  concert['valid'] && (
     <div className="concert">
       <div className="concertTitleContainer" style={{background:
         'linear-gradient(to bottom,rgba(0, 0, 0, 0.2),rgba(0, 0, 0, .6)), url(' + concert['artists'][0]['image'] + ') no-repeat center'}}>
         <a href={concert.url}><h2 className="concertTitle">{concert.displayName}</h2></a>
       </div>
         {concert.artists.map(a =>
-          (a['valid'] &&
             <Artist a={a} />
-          )
         )}
     </div>
-  )
 )
 
 

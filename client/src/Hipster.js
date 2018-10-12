@@ -101,6 +101,8 @@ class Hipster extends Component {
     })
   }
 
+
+
   render() {
     return (
       <div className="noParticle">

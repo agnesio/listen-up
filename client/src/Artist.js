@@ -13,28 +13,31 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import { faPause } from '@fortawesome/free-solid-svg-icons'
 const spotifyApi = new SpotifyWebApi();
 
+          // <th valign="middle" className="match">{(this.props.a.match * 100).toFixed(2)}% Match</th>
 
 class Artist extends Component {
 
   render() {
     return (
       <div className="artist">
-        <table className="artistTable">
-        <tr>
-          <th valign="middle">  <img className="artistImage" src={this.props.a.image ? this.props.a.image : concertPic} /> </th>
-          <th valign="middle">  <h2 className="artistName">{this.props.a.displayName}</h2> </th>
-          <th valign="middle" className="match">{(this.props.a.match * 100).toFixed(2)}% Match</th>
-        </tr>
-        </table>
-        <br/>
-        <table className="songList">
-          {this.props.a.tracks.map( t =>
+        {this.props.a.tracks.length > 0 &&
+          <div>
+          <table className="artistTable">
             <tr>
-              <td  valign="middle" className="buttonContainer"><button className="playButton" onClick={() => this.props.concertActions.playSong(this.props.deviceId, t.uri, this.props.nowPlaying, this.props.playing)}><FontAwesomeIcon icon={this.props.playing && this.props.nowPlaying == t.uri ? faPause : faPlay}/></button></td>
-              <td  valign="middle" className="trackName">{t.name}</td>
+              <th valign="middle"> <div className="artistImageContainer"><img className="artistImage" src={this.props.a.image ? this.props.a.image : concertPic} /></div> </th>
+              <th valign="middle">  <h2 className="artistName">{this.props.a.displayName}</h2> </th>
             </tr>
-          )}
-      </table>
+            </table>
+            <table className="songList">
+              {this.props.a.tracks.map( t =>
+                <tr>
+                  <td  valign="middle" className="buttonContainer"><button className="playButton" onClick={() => this.props.concertActions.playSong(this.props.deviceId, t.uri, this.props.nowPlaying, this.props.playing)}><FontAwesomeIcon icon={this.props.playing && this.props.nowPlaying == t.uri ? faPause : faPlay}/></button></td>
+                  <td  valign="middle" className="trackName">{t.name}</td>
+                </tr>
+              )}
+          </table>
+          </div>
+        }
       </div>
     )
   }

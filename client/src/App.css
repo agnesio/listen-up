@@ -307,10 +307,18 @@ input {
 }
 
 .artistImage {
-  width: 100px;
-  height: 100px;
+  min-height: 100px;
+  min-width: 100px;
+  max-height: 150px;
+  max-width: 150px;
   display: inline-block;
+}
+
+.artistImageContainer{
+  height: 100px;
+  width: 100px;
   border-radius: 100px;
+  overflow: hidden;
 }
 
 .artistName {
