@@ -109,14 +109,36 @@ class Hipster extends Component {
         {this.props.loggedIn ?
           (!this.props.loading ?
             <div>
-            <h1 className="primaryHeader"> Upcoming Concerts </h1>
-            <h2 className="locationHeader"> Displaying concerts in {this.props.locName}</h2>
-            {this.props.concerts.map(c =>
-              <ConcertCard concert={c} />
-            )}
-            <div className="loadButtonWrapper">
-              <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Load More </button>
-            </div>
+              <h1 className="primaryHeader"> Upcoming Concerts </h1>
+              {this.props.noResults ?
+                <div>
+                <h2 className="locationHeader">No concerts found for {this.props.locSearch}</h2>
+                  <div className="locInputDiv">
+                    <input className='locInput' placeholder="City, State" onChange={(event) => this.props.concertActions.updateLoc(event.target.value)}/>
+                    <button className="locButton" onClick={() => this.props.concertActions.getConcerts(1, this.props.locSearch)}>Go</button>
+                  </div>
+                  {this.props.concerts.map(c =>
+                  <ConcertCard concert={c} />
+                )}
+                <div className="loadButtonWrapper">
+                  <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Next</button>
+                </div>
+                </div>
+              :
+              <div>
+                <h2 className="locationHeader"> Displaying concerts in <u onClick={() => this.props.concertActions.showSearch()}>{this.props.locName}</u></h2>
+                <div className={this.props.search ? 'locInputDiv' : 'hidden'}>
+                  <input className='locInput' placeholder="City, State" onChange={(event) => this.props.concertActions.updateLoc(event.target.value)}/>
+                  <button className="locButton" onClick={() => this.props.concertActions.getConcerts(1, this.props.locSearch)}>Go</button>
+                </div>
+                {this.props.concerts.map(c =>
+                <ConcertCard concert={c} />
+                )}
+              <div className="loadButtonWrapper">
+                <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Next</button>
+              </div>
+              </div>
+            }
             </div>
             :
             <div className="loadingPage">
@@ -155,6 +177,9 @@ function mapStateToProps(state) {
     token: state.auth.token,
     deviceId: state.auth.device,
     locName: state.location.name,
+    search: state.concerts.search,
+    locSearch: state.location.search,
+    noResults: state.concerts.noResults
   };
 }
 

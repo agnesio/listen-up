@@ -1,7 +1,8 @@
 export default {
   concerts: {
     concerts: [],
-    page: 1
+    page: 1,
+    noResults: false
   },
   player: {
     nowPlaying: '',

@@ -24,6 +24,18 @@ a {
   text-decoration: none;
 }
 
+button {
+  font-family: 'Raleway', sans-serif;
+  background-color: white;
+  color: rgb(38, 33, 50);
+  border-radius: 10vw;
+  border: 1px solid rgb(38, 33, 50);
+}
+
+.hidden {
+  display: none;
+}
+
 .landing{
   text-align: center;
   position: relative;
@@ -129,12 +141,25 @@ a {
 input {
   background: transparent;
   width: 40vw;
-  color: white;
+  color:rgb(38, 33, 50);
   border-radius: 10vw;
-  border: solid white 1px;
+  border: solid rgb(38, 33, 50) 1px;
   text-align: center;
   font-family: 'Raleway', sans-serif;
   font-weight: 100;
+}
+
+.locInputDiv{
+  text-align: center;
+}
+
+.locInput{
+  margin-right: 10px;
+}
+
+.locButton{
+  font-size: 20px;
+  padding: 4px 10px;
 }
 
 .particleButton {
@@ -281,7 +306,7 @@ input {
 .concert {
   text-align: center;
   border: 1px solid #EEE;
-  margin: 10px 20px 10px 20px;
+  margin: 20px 70px 20px 70px;
   padding: 0 !important;
   border-radius: 10px;
 }
@@ -328,8 +353,9 @@ input {
 }
 
 .artistTable {
-  width: 80vw;
+  width: calc(100vw - 250px);
   text-align: left;
+  margin-bottom: 20px;
 }
 
 .match{

@@ -13,7 +13,6 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import { faPause } from '@fortawesome/free-solid-svg-icons'
 const spotifyApi = new SpotifyWebApi();
 
-          // <th valign="middle" className="match">{(this.props.a.match * 100).toFixed(2)}% Match</th>
 
 class Artist extends Component {
 
@@ -26,8 +25,10 @@ class Artist extends Component {
             <tr>
               <th valign="middle"> <div className="artistImageContainer"><img className="artistImage" src={this.props.a.image ? this.props.a.image : concertPic} /></div> </th>
               <th valign="middle">  <h2 className="artistName">{this.props.a.displayName}</h2> </th>
+              <th valign="middle" className="match">{this.props.a.match < .01 ? 'No Match' : Math.round(this.props.a.match * 100) + '% Match'}</th>
             </tr>
             </table>
+            <p>{getRecommendString(this.props.a)}</p>
             <table className="songList">
               {this.props.a.tracks.map( t =>
                 <tr>
@@ -44,12 +45,32 @@ class Artist extends Component {
 
 }
 
+function getRecommendString(a) {
+  if(a.match > 0.01) {
+    if(a.userArtists.length > 0) {
+      if(a.userArtists[0] == a['displayName']) {
+        return "You have this artist in your library!"
+      } else {
+        let str = "Matched based on similar artists in your library: "
+        str += a.userArtists.join(", ")
+        return str
+      }
+    } else {
+      let str = "Matched based on genres in your library: "
+      str += a.userGenres.join(", ")
+      return str
+    }
+  } else {
+    return '';
+  }
+}
+
 function mapStateToProps(state) {
   return {
     token: state.auth.token,
     deviceId: state.auth.device,
     nowPlaying: state.player.song,
-    playing: state.player.playing
+    playing: state.player.playing,
   };
 }
 
