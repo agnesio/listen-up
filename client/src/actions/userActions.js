@@ -55,6 +55,17 @@ export function getAnalytics(pop?, total?, offset?, artistsArray?) {
   }
 }
 
+export function getUserInfo(){
+  return dispatch => {
+    spotifyApi.getMe().then(resp => {
+      console.log(resp)
+      let fName = resp.display_name.split(" ")
+      fName = fName[0]
+      dispatch({type: types.SET_USER_INFO, email: resp.email, pic: resp.images[0]['url'], name: fName})
+    })
+  }
+}
+
 export function setRecentArtists(a) {
   console.log(a)
   return {type: types.RECENT_ARTISTS, recentArtists: a}
@@ -181,4 +192,8 @@ export function openBeta() {
 
 export function betaReadMore() {
   return {type: types.OPEN_BETA}
+}
+
+export function toggleNav(isOpen) {
+  return {type: types.TOGGLE_NAV, isOpen: isOpen}
 }

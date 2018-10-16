@@ -46,6 +46,12 @@ export default function hipsterRating(state=initialState.user, action) {
       return Object.assign({}, state, {
         submitted: true
       })
+    case types.SET_USER_INFO:
+      return Object.assign({}, state, {
+        email: action.email,
+        pic: action.pic,
+        name: action.name
+      })
     default:
       return state
   }

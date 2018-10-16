@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Hipster from './Hipster.js'
+import Nav from './Nav.js'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as authActions from './actions/authActions';
@@ -22,6 +23,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Nav />
         <Hipster />
       </div>
     );

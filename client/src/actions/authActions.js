@@ -1,6 +1,6 @@
 import * as types from './actionTypes';
 import SpotifyWebApi from 'spotify-web-api-js';
-import { getAnalytics } from './userActions'
+import { getAnalytics, getUserInfo, toggleNav } from './userActions'
 import axios from 'axios'
 const spotifyApi = new SpotifyWebApi();
 
@@ -9,7 +9,11 @@ export function setLoggedIn(token) {
 }
 
 export function setLogOut() {
-  return {type: types.LOGOUT};
+  return dispatch => {
+    spotifyApi.setAccessToken('')
+    dispatch({type: types.LOGOUT})
+    dispatch(toggleNav(false))
+  }
 }
 
 export function setLoading(loading) {
@@ -32,6 +36,7 @@ export function login() {
         dispatch(setLoading(true))
         dispatch(setLoggedIn(token))
         dispatch(getAnalytics())
+        dispatch(getUserInfo())
       }
     } else {
       return dispatch => {

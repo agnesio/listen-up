@@ -64,7 +64,7 @@ class Hipster extends Component {
       console.log(data)
       let { device_id } = data;
       await this.props.authActions.setDevice(device_id);
-      this.transferPlaybackHere();
+      // this.transferPlaybackHere();
     });
   }
 

@@ -5,6 +5,7 @@
   margin: 0 !important;
   background-color: white;
   position: relative;
+  display: flex;
 }
 
 h1, h2, h3, h4, h5, p, a {
@@ -51,11 +52,10 @@ button {
 }
 
 .noParticle{
-  position:absolute;
   width: 100vw;
-  height: 100vh;
   z-index: 100;
   overflow: scroll;
+  margin-top: 80px;
 }
 
 .betaButton {
@@ -76,7 +76,7 @@ button {
 
 .loadButton{
   font-family: 'Raleway', sans-serif;
-  margin: 7vh auto 7vh auto;
+  margin: 7vh auto 3vh auto;
   height: 7vh;
   width: 20vw;
   background-color: white;
@@ -394,4 +394,51 @@ input {
 
 .songkickWrapper h3{
   font-weight: 700;
+}
+
+.navBar{
+  width: 100%;
+  height: 80px;
+  box-shadow: 10px 2px 8px 10px #EEE;
+  z-index:200;
+  position: fixed;
+  background:white;
+  line-height: 80px;
+}
+
+.navTab{
+  display: inline-block;
+  position: fixed;
+  right: 20px;
+  padding: 0px 40px 0px 0px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+}
+
+.userProfPic {
+  width: 40px;
+  border-radius: 50%;
+}
+
+.userDropDown {
+  position: fixed;
+  width: 100px;
+  right: 10px;
+  top: 70px;
+  background: white;
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: 10px 2px 8px 10px #EEE;
+}
+
+.dropdownTooltip {
+  width: 0;
+  height: 0;
+  position: fixed;
+  right: 55px;
+  top: 65px;
+  z-index:300;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid white;
 }

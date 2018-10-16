@@ -20,16 +20,21 @@ export default {
     genreCount: 0,
     loadingMessage: '',
     email: '',
+    pic: '',
     submitted: false,
     submitting: false,
     betaOpen: false,
     recentArtists: [],
-    recentGenres: []
+    recentGenres: [],
   },
   location: {
     name: '',
     search: '',
     id: '',
     coords: [38.9127254, -77.0148525]
+  },
+  nav: {
+    currPage: '',
+    navOpen: false
   }
 };
