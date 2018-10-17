@@ -1,8 +1,11 @@
+import moment from 'moment';
 export default {
   concerts: {
     concerts: [],
     page: 1,
-    noResults: false
+    noResults: false,
+    startDate: moment(),
+    endDate: moment().add(1, 'months')
   },
   player: {
     nowPlaying: '',
@@ -26,6 +29,7 @@ export default {
     betaOpen: false,
     recentArtists: [],
     recentGenres: [],
+    addedSongs: []
   },
   location: {
     name: '',

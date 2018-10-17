@@ -197,3 +197,15 @@ export function betaReadMore() {
 export function toggleNav(isOpen) {
   return {type: types.TOGGLE_NAV, isOpen: isOpen}
 }
+
+export function addToLibrary(id, index) {
+  return dispatch => {
+    if(index == -1) {
+      spotifyApi.addToMySavedTracks([id]).then(resp => {
+        dispatch({type: types.ADD_TO_LIBRARY, song: id})
+      })
+    } else {
+      return null
+    }
+  }
+}

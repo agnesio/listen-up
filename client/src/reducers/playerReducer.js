@@ -5,7 +5,9 @@ export default function concerts(state = initialState.player, action) {
   switch (action.type) {
     case types.NOW_PLAYING:
       return Object.assign({}, state, {
-        song: action.song
+        song: action.song,
+        name: action.name,
+        trackId: action.trackId
       })
     case types.PLAY_SONG:
       return Object.assign({}, state, {

@@ -11,28 +11,31 @@ const spotifyApi = new SpotifyWebApi();
 export function getConcerts(page, loc?) {
   console.log('getting concerts')
   return (dispatch, getState) => {
-      let loading = getState().auth.loading
+      let start = getState().concerts.startDate.format("YYYY-MM-DD")
+      let end = getState().concerts.endDate.format("YYYY-MM-DD")
       dispatch(setLoading(true))
+      let concertQuery = {'min_date': start, 'max_date' : end, 'per_page' : 20, 'page' : page}
       if(page == 1) {
         //need to grab the location either from the search or user's location
         //defaults to Washington, DC
         let data = {}
         if(loc) {
-          data = {'query' : loc}
+          data['query'] = loc
         } else {
           let coords = getState().location.coords
-          data = {'location' : 'geo:'+coords[0]+','+coords[1]}
+          data['location'] = 'geo:'+coords[0]+','+coords[1]
         }
         kick.searchLocations(data).then(resp => {
-          console.log(resp)
           if(resp) {
             let name = resp[0]['metroArea']['displayName'] + ', ' + resp[0]['metroArea']['state']['displayName']
             let id = resp[0]['metroArea']['id']
             dispatch(setLocation(name, id))
-            kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : page}).then(events => {
+            kick.getMetroAreaCalendar(id, concertQuery).then(events => {
               dispatch(setNoResults(false))
               dispatch(formatConcerts(events))
               dispatch(increasePage(page+1))
+            }).catch(err => {
+              console.log(err)
             })
           } else {
             //location search yielded no results
@@ -44,7 +47,7 @@ export function getConcerts(page, loc?) {
         //don't need to set the location, already set
         dispatch(setLoadingMessage('One Sec'))
         let id = getState().location.id
-        kick.getMetroAreaCalendar(id, {'per_page' : 20, 'page' : page}).then(events => {
+        kick.getMetroAreaCalendar(id, concertQuery).then(events => {
           dispatch(formatConcerts(events))
           dispatch(increasePage(page+1))
         })
@@ -64,8 +67,15 @@ export function increasePage(page) {
   return {type: types.UP_PAGE, page: page};
 }
 
+export function setStart(start) {
+  return {type: types.CHANGE_START_DATE, start: start}
+}
+
+export function setEnd(end) {
+  return {type: types.CHANGE_END_DATE, end: end}
+}
+
 export function formatConcerts(events) {
-  console.log('formatting concerts')
   let concerts = []
   return dispatch => {
     events.forEach(e => {
@@ -87,13 +97,11 @@ export function formatConcerts(events) {
         }
       }
     })
-    console.log('about to get tracks')
     dispatch(getTracks(concerts))
   }
 }
 
 function getTracks(concerts) {
-  console.log('getting tracks')
   // let validConcerts = []
   return (dispatch) => {
     //to move to the next function after the foreach functions are complete
@@ -103,7 +111,6 @@ function getTracks(concerts) {
     })
     let count = 0;
     concerts.forEach(c => {
-      console.log('length is '+ all)
       c['verifiedArtists'] = []
       c['artists'].forEach(a => {
         let validArtist = {}
@@ -142,7 +149,6 @@ function getTracks(concerts) {
 }
 
 export function getVerifiedTracks(unfilteredConcerts) {
-  console.log('verified tracks')
   let concerts = unfilteredConcerts.filter(c =>
     c['verifiedArtists'].length > 0
   )
@@ -173,7 +179,6 @@ function checkIfValExists(id, arr){
 }
 
 export function getMatch(concerts) {
-  console.log('getting match')
   let all = 0;
   concerts.forEach(c => {
     all += c['artists'].length
@@ -194,7 +199,6 @@ export function getMatch(concerts) {
             count++
             a['userArtists'].push(a['displayName'])
             if(count == all) {
-              console.log('adding concerts artists')
               dispatch(addConcerts(concerts))
             }
           }  else {
@@ -235,32 +239,39 @@ export function getMatch(concerts) {
 }
 
 
-export function playSong(deviceId, song, curr, playing) {
+export function playSong(deviceId, trackId, songUri, songName, curr, playing) {
     return dispatch => {
-    if(curr == song) {
-      if(playing) {
-        let data = {'device_id' : deviceId, 'uris' : [song]}
-        spotifyApi.pause().then(resp => {
-        }).catch(err => {
-          console.log(err)
-        })
-        dispatch({type: types.PAUSE_SONG})
-      } else {
-        dispatch({type: types.PLAY_SONG})
-        spotifyApi.play().then(resp => {
-        }).catch(err => {
-          console.log(err)
-        })
-      }
-    } else {
-      let data = {'device_id' : deviceId, 'uris' : [song]}
-      spotifyApi.play(data).then(resp => {
-      }).catch(err => {
-        console.log(err)
+    spotifyApi.transferMyPlayback([deviceId]).then(val => {
+      spotifyApi.containsMySavedTracks([trackId]).then(val => {
+        if(val[0]) {
+          dispatch({type: types.ADD_TO_LIBRARY, song: trackId})
+        }
       })
-        dispatch({type: types.NOW_PLAYING, song: song})
-        dispatch({type: types.PLAY_SONG})
-      }
+      if(curr == songUri) {
+        if(playing) {
+          let data = {'device_id' : deviceId, 'uris' : [songUri]}
+          spotifyApi.pause().then(resp => {
+          }).catch(err => {
+            console.log(err)
+          })
+          dispatch({type: types.PAUSE_SONG})
+        } else {
+          dispatch({type: types.PLAY_SONG})
+          spotifyApi.play().then(resp => {
+          }).catch(err => {
+            console.log(err)
+          })
+        }
+      } else {
+        let data = {'device_id' : deviceId, 'uris' : [songUri]}
+        spotifyApi.play(data).then(resp => {
+        }).catch(err => {
+          console.log(err)
+        })
+          dispatch({type: types.NOW_PLAYING, song: songUri, name: songName, trackId: trackId })
+          dispatch({type: types.PLAY_SONG})
+        }
+    })
     }
 
 }

@@ -32,7 +32,11 @@ class Artist extends Component {
             <table className="songList">
               {this.props.a.tracks.map( t =>
                 <tr>
-                  <td  valign="middle" className="buttonContainer"><button className="playButton" onClick={() => this.props.concertActions.playSong(this.props.deviceId, t.uri, this.props.nowPlaying, this.props.playing)}><FontAwesomeIcon icon={this.props.playing && this.props.nowPlaying == t.uri ? faPause : faPlay}/></button></td>
+                  <td  valign="middle" className="buttonContainer">
+                    <button className="playButton" onClick={() => this.props.concertActions.playSong(this.props.deviceId, t.id, t.uri, t.name, this.props.nowPlaying, this.props.playing)}>
+                      <FontAwesomeIcon icon={this.props.playing && this.props.nowPlaying == t.uri ? faPause : faPlay}/>
+                    </button>
+                  </td>
                   <td  valign="middle" className="trackName">{t.name}</td>
                 </tr>
               )}

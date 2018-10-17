@@ -21,7 +21,7 @@ p {
 }
 
 a {
-  color: white;
+  color: black;
   text-decoration: none;
 }
 
@@ -142,8 +142,11 @@ input {
   background: transparent;
   width: 40vw;
   color:rgb(38, 33, 50);
-  border-radius: 10vw;
-  border: solid rgb(38, 33, 50) 1px;
+  /* border-radius: 10vw; */
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: solid rgb(38, 33, 50) 1px;
   text-align: center;
   font-family: 'Raleway', sans-serif;
   font-weight: 100;
@@ -406,17 +409,27 @@ input {
   line-height: 80px;
 }
 
+.navBarContent{
+  position: fixed;
+  right: 10px;
+  display: flex;
+}
+
 .navTab{
   display: inline-block;
-  position: fixed;
-  right: 20px;
   padding: 0px 40px 0px 0px;
   font-family: 'Raleway', sans-serif;
   font-weight: 300;
 }
 
+.navTabLogo{
+  position: fixed;
+  left: 40px !important;
+}
+
 .userProfPic {
   width: 40px;
+  margin-top: 20px;
   border-radius: 50%;
 }
 
@@ -441,4 +454,70 @@ input {
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-bottom: 5px solid white;
+}
+
+.datePicker {
+  /* border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0px; */
+  display: inline-block;
+  width: 150px;
+  margin: 10px 20px 10px 20px;
+}
+
+.dateSelection {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+}
+
+.about {
+  margin: 100px 250px 100px 250px;
+}
+
+.libraryButton {
+  margin-left: 20px;
+}
+
+.nowPlayingCard{
+  width: 250px;
+  height: 100px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  box-shadow: 1px 0px 8px 1px #EEE;
+}
+
+.player {
+  display: flex;
+}
+
+.playInfo{
+  height: 100px;
+  width: 200px;
+  text-align: center;
+}
+
+.songName {
+  font-weight: 600;
+  margin-top: 40px;
+  overflow-x: scroll;
+  white-space: nowrap
+}
+
+.buttonContainerCurr {
+  margin: 30px 0px 20px 20px;
+}
+
+.addButton{
+  text-decoration: underline;
+  font-size: 13px;
+}
+
+.addedButton{
+  font-size: 13px;
+  color: rgba(0,0,0,.5);
 }

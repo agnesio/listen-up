@@ -52,6 +52,11 @@ export default function hipsterRating(state=initialState.user, action) {
         pic: action.pic,
         name: action.name
       })
+    case types.ADD_TO_LIBRARY:
+
+      return Object.assign({}, state, {
+          addedSongs: [...state.addedSongs, action.song]
+      })
     default:
       return state
   }

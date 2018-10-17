@@ -18,15 +18,25 @@ import {
   RedditIcon,
   EmailIcon
 } from 'react-share';
-import Particles from 'react-particles-js';
 import ParticleEffectButton from 'react-particle-effect-button'
 import ConcertCard from './Concert.js'
+import Player from './Player.js'
 import SpotifyWebApi from 'spotify-web-api-js';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
+import 'react-datepicker/dist/react-datepicker.css';
 const spotifyApi = new SpotifyWebApi();
 
 
 
 class Hipster extends Component {
+
+  constructor (props) {
+    super(props)
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleEndDateChange = this.handleEndDateChange.bind(this);
+  }
 
   componentWillMount() {
     this.playerCheckInterval = setInterval(() => this.checkForPlayer(this.props.token), 1000);
@@ -64,7 +74,6 @@ class Hipster extends Component {
       console.log(data)
       let { device_id } = data;
       await this.props.authActions.setDevice(device_id);
-      // this.transferPlaybackHere();
     });
   }
 
@@ -94,11 +103,15 @@ class Hipster extends Component {
   //   }
   }
 
-  transferPlaybackHere() {
-    console.log('transferring playback')
-    spotifyApi.transferMyPlayback([this.props.deviceId]).then(val => {
-      console.log(val)
-    })
+
+  handleStartDateChange(date) {
+    console.log(date)
+    this.props.concertActions.setStart(date)
+  }
+
+  handleEndDateChange(date) {
+    console.log(date)
+    this.props.concertActions.setEnd(date)
   }
 
 
@@ -131,8 +144,27 @@ class Hipster extends Component {
                   <input className='locInput' placeholder="City, State" onChange={(event) => this.props.concertActions.updateLoc(event.target.value)}/>
                   <button className="locButton" onClick={() => this.props.concertActions.getConcerts(1, this.props.locSearch)}>Go</button>
                 </div>
+                <div className="dateSelection">
+                  <DatePicker
+                      selected={this.props.startDate}
+                      onChange={this.handleStartDateChange}
+                      className="datePicker"
+                  />
+                  <h3> to </h3>
+                  <DatePicker
+                      selected={this.props.endDate}
+                      onChange={this.handleEndDateChange}
+                      className="datePicker"
+                  />
+                  <button className="locButton" onClick={() => this.props.concertActions.getConcerts(1)}>Search</button>
+                </div>
                 {this.props.concerts.map(c =>
                 <ConcertCard concert={c} />
+                )}
+                {this.props.currSong && (
+                  <div className="nowPlayingCard">
+                    <Player />
+                  </div>
                 )}
               <div className="loadButtonWrapper">
                 <button className="loadButton" onClick={() => this.props.concertActions.getConcerts(this.props.page)}>Next</button>
@@ -182,7 +214,10 @@ function mapStateToProps(state) {
     locName: state.location.name,
     search: state.concerts.search,
     locSearch: state.location.search,
-    noResults: state.concerts.noResults
+    noResults: state.concerts.noResults,
+    startDate: state.concerts.startDate,
+    endDate: state.concerts.endDate,
+    currSong: state.player.song
   };
 }
 

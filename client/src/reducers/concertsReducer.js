@@ -19,6 +19,14 @@ export default function concerts(state = initialState.concerts, action) {
       return Object.assign({}, state, {
         noResults: action.results
       })
+    case types.CHANGE_START_DATE:
+      return Object.assign({}, state, {
+        startDate: action.start
+      })
+    case types.CHANGE_END_DATE:
+      return Object.assign({}, state, {
+        endDate: action.end
+      })
     default:
       return state;
   }
