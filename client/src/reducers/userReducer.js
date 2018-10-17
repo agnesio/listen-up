@@ -32,7 +32,11 @@ export default function hipsterRating(state=initialState.user, action) {
       })
     case types.UPDATE_EMAIL:
       return Object.assign({}, state, {
-        email: action.email
+        formEmail: action.email
+      })
+    case types.UPDATE_FEEDBACK:
+      return Object.assign({}, state, {
+        feedback: action.feedback
       })
     case types.SUBMIT_EMAIL:
       return Object.assign({}, state, {
@@ -53,9 +57,16 @@ export default function hipsterRating(state=initialState.user, action) {
         name: action.name
       })
     case types.ADD_TO_LIBRARY:
-
       return Object.assign({}, state, {
           addedSongs: [...state.addedSongs, action.song]
+      })
+    case types.SUBMIT_MAILING:
+      return Object.assign({}, state, {
+        mailingList: [...state.mailingList, action.mailType]
+      })
+    case types.SUBMIT_FEEDBACK:
+      return Object.assign({}, state, {
+        feedbackList: [...state.feedbackList, action.feedbackType]
       })
     default:
       return state

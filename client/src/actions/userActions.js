@@ -144,20 +144,33 @@ export function setArtists(artists){
   return {type: types.USER_ARTISTS, artists: artists}
 }
 
-export function updateEmail(email) {
+export function setEmail(email) {
   return {type: types.UPDATE_EMAIL, email: email};
 }
 
-export function submitEmail(email) {
-return dispatch => {
-  if(email.trim() != '') {
-    console.log(email)
-    let url = 'https://q0arp55edk.execute-api.us-east-1.amazonaws.com/dev/setEmailsForAreYouHipster'
-    let data = {'email' : email, 'timestamp' : Date.now()}
+export function setFeedback(feedback) {
+    return {type: types.UPDATE_FEEDBACK, feedback: feedback};
+}
+
+export function mailingList(type, email) {
+  return dispatch => {
+    let url = 'https://rfvslvf9nk.execute-api.us-east-1.amazonaws.com/dev/setSpotifyMailList'
+    let data = {'type' : type, 'email' : email}
     axios.post(url, data).then(val => {
-      dispatch(changeEmailStatus())
-    })
+      dispatch({type: types.SUBMIT_MAILING, mailType: type})
+    }).catch(err => [
+      console.log(err)
+    ])
   }
+}
+
+export function feedback(type, email, message) {
+  return dispatch => {
+    let url = 'https://rfvslvf9nk.execute-api.us-east-1.amazonaws.com/dev/setSpotifyFeedback'
+    let data = {'type' : type, 'email' : email, 'message' : message}
+    axios.post(url, data).then(val => {
+      dispatch({type: types.SUBMIT_FEEDBACK, feedbackType: type})
+    })
   }
 }
 

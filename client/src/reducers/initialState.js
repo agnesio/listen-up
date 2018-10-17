@@ -26,10 +26,13 @@ export default {
     pic: '',
     submitted: false,
     submitting: false,
-    betaOpen: false,
     recentArtists: [],
     recentGenres: [],
-    addedSongs: []
+    addedSongs: [],
+    formEmail: '',
+    feedback: '',
+    mailingList: [],
+    feedbackList: []
   },
   location: {
     name: '',
