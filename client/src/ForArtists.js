@@ -33,7 +33,7 @@ class ForArtists extends Component {
           <p>Thanks for your input!</p>
           :
           <div>
-            <p>Have suggestions for features or feedback for the app? Hit us up. </p>
+            <p>Have suggestions for features or feedback for this offering, or the app in general? Hit us up. </p>
             <input type="email" className="feedbackEmail"  onChange={(e)=> this.props.userActions.setEmail(e.target.value)}/>
             <input type="textarea" className="feedbackInput" onBlur={(e)=> this.props.userActions.setFeedback(e.target.value)}/>
             <button onClick={()=> this.props.userActions.feedback('artist', this.props.email, this.props.feedback)}>Send</button>
