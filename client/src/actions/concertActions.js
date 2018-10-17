@@ -206,17 +206,17 @@ export function getMatch(concerts) {
                   //checking if this artist's genre exists in user's library
                   a['genres'].forEach(ag => {
                     if(genreMatrix.hasOwnProperty(ag)){
-                      a['match'] += (genreMatrix[ag] / genreCount)
+                      console.log('genre matches')
+                      a['match'] += (.02 * genreMatrix[ag])
                       a['userGenres'].push(ag)
                     }
                   })
                   //getting the related artists to compare
                   spotifyApi.getArtistRelatedArtists(a['spotifyId']).then(related => {
                     related.artists.forEach(r => {
-                      if(checkIfValExists(r['id'], artists)) {
-                        console.log(r)
+                      if(artists.hasOwnProperty(r['id'])) {
                         a['userArtists'].push(r['name'])
-                        a['match']+= .05
+                        a['match'] += (.05 * artists[r['id']])
                       }
                     })
                     count++

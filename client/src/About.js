@@ -40,6 +40,10 @@ class About extends Component {
             <button onClick={()=> this.props.userActions.feedback('about', this.props.email, this.props.feedback)}>Send</button>
           </div>
         }
+      <div className="boringStuff">
+        <a href="https://app.termly.io/document/privacy-policy/23b4f8fd-d23f-48ee-9d04-3d2b2686aa42">Privacy Policy</a>
+        <a href="https://app.termly.io/document/terms-of-use-for-website/13103719-0f5d-40db-ae3d-8ff61debbac2">Terms Of Use </a>
+      </div>
       </div>
     );
   }
